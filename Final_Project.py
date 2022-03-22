@@ -1,9 +1,9 @@
-import dash
-import dash_core_components as dcc
-import dash_html_components as html
+from dash import Dash, html, dcc
 import plotly.express as px
 import pandas as pd
+
 from dash.dependencies import Input, Output
+from plotly.subplots import make_subplots
 import yfinance as yf
 import matplotlib.pyplot as plt
 
@@ -13,13 +13,13 @@ ticker_list = ['IBM', 'MSFT', 'AAPL', 'AMZN']
 import math
 import numpy as np
 from sklearn.preprocessing import MinMaxScaler
-from keras.models import Sequential
-from keras.layers import Dense, LSTM
+#from keras.models import Sequential
+#from keras.layers import Dense, LSTM
 
 
 
 # use this to change the ticker  
-GetFacebookInformation = yf.Ticker("FB")
+
  
 # Let us  get historical stock prices for Facebook
 # covering the past few years.
@@ -32,44 +32,52 @@ GetFacebookInformation = yf.Ticker("FB")
 
 Convert into plotly figure and use inputs to change ticker and date
 '''
-
-print(GetFacebookInformation.history(period="max"))
+GetFacebookInformation = yf.Ticker("FB")
+z = GetFacebookInformation.history(period="max")['Close']
 # use the period to edit the timeline
 plt.figure(figsize=(16,8))
 plt.title('History')
-plt.plot(GetFacebookInformation['Close'])
+plt.plot(z)
 plt.xlabel('Date', fontsize=18)
 plt.ylabel('Close Price $', fontsize=18)
-plt.show()
+#plt.show()
 
 
-data = GetFacebookInformation.filter(['Close'])
-dataset = data.values
-training_data_len = math.ceil(len(dataset) * .8)
-training_data_len
-
-scaler = MinMaxScaler(feature_range=(0,1))
-scaled_data = scaler.fit_transform(dataset)
-scaled_data
-
-# use train_split_form
-train_data = scaled_data[0:training_data_len , :]
-x_train = []
-y_train = []
-for i in range(60, len(train_data)):
-  x_train.append(train_data[i-60:i, 0])
-  y_train.append(train_data[i, 0])
-  if i<=61:
-    print(x_train)
-    print(y_train)
-    print()
+data = z
 
 
 
-app = dash.Dash(__name__)
 
+app = Dash(__name__)
+app.layout = html.Div([
+    dcc.Graph(id="graph"),
+    html.Br(),
+    dcc.Dropdown(id='country_dd',
+        # Set the available options with noted labels and values
+        # stock input 
+        options=[{'label':stock, 'value':stock} for stock in ticker_list],
+            style={'width':'200px', 'margin':'0 auto'}),
+    
+    html.Br()
+        ])
 
+@app.callback(
+    # Set the input and output of the callback to link the dropdown to the graph
+    Output(component_id='graph', component_property='figure'),
+    Input(component_id='country_dd', component_property='value')
+)
+def customize_inputs(inputs):
+    if inputs == None:
+        inputs = 'FB'
+    GetFacebookInformation = yf.Ticker(inputs)
+
+    fig = px.line(GetFacebookInformation.history(period="max"), x='Volume',y='Close', template="simple_white", title=f'Date vs. {inputs}')
+    return fig
 
 
 if __name__ == '__main__':
     app.run_server()
+
+
+
+
