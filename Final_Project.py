@@ -69,9 +69,11 @@ app.layout = html.Div([
 def customize_inputs(inputs):
     if inputs == None:
         inputs = 'FB'
-    GetFacebookInformation = yf.Ticker(inputs)
+    stock = yf.Ticker(inputs)  # Company name
+# get last 5 years of data
+    stock_data = stock.history(period="max")
 
-    fig = px.line(GetFacebookInformation.history(period="max"), y=['Close','High'], template="simple_white", title=f'{inputs} stock data')
+    fig = px.line(stock_data, x= stock_data.index, y='Close', template="simple_white", title=f'{inputs} stock data')
     return fig
 
 
