@@ -71,7 +71,7 @@ def customize_inputs(inputs):
         inputs = 'FB'
     GetFacebookInformation = yf.Ticker(inputs)
 
-    fig = px.line(GetFacebookInformation.history(period="max"), x='Volume',y='Close', template="simple_white", title=f'Date vs. {inputs}')
+    fig = px.line(GetFacebookInformation.history(period="max"), y='Close', template="simple_white", title=f'Date vs. {inputs}')
     return fig
 
 
