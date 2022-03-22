@@ -35,12 +35,15 @@ Convert into plotly figure and use inputs to change ticker and date
 GetFacebookInformation = yf.Ticker("FB")
 z = GetFacebookInformation.history(period="max")['Close']
 # use the period to edit the timeline
+
 plt.figure(figsize=(16,8))
 plt.title('History')
 plt.plot(z)
 plt.xlabel('Date', fontsize=18)
 plt.ylabel('Close Price $', fontsize=18)
-#plt.show()
+
+df = px.data.stocks()
+print(df.head())
 
 
 data = z
@@ -71,6 +74,16 @@ def customize_inputs(inputs):
         inputs = 'FB'
     stock = yf.Ticker(inputs)  # Company name
 # get last 5 years of data
+    '''
+    nio = yf.Ticker('inputs')
+    history = nio.history(period="Max")
+    df = pd.DataFrame(history)
+    df.reset_index(inplace=True)
+    df['date'] = pd.to_datetime(df.date)
+    x = df[['Open', 'High','Low', 'Volume']]
+    y = df['Close']
+
+    ''' 
     stock_data = stock.history(period="max")
 
     fig = px.line(stock_data, x= stock_data.index, y='Close', template="simple_white", title=f'{inputs} stock data')
