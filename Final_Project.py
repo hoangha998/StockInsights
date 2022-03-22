@@ -1,8 +1,8 @@
 from dash import Dash, html, dcc
 import plotly.express as px
 import pandas as pd
-
-from dash.dependencies import Input, Output
+from datetime import date
+from dash.dependencies import Input, Output, State
 from plotly.subplots import make_subplots
 import yfinance as yf
 import matplotlib.pyplot as plt
@@ -55,11 +55,27 @@ app = Dash(__name__)
 app.layout = html.Div([
     dcc.Graph(id="graph"),
     html.Br(),
-    dcc.Dropdown(id='country_dd',
-        # Set the available options with noted labels and values
-        # stock input 
-        options=[{'label':stock, 'value':stock} for stock in ticker_list],
-            style={'width':'200px', 'margin':'0 auto'}),
+    dcc.Textarea(
+        id='textarea-state-example',
+        value='',
+        style={'width': '10%', 'height': 25,  'align': 'center'},
+    ),
+    html.Button('Submit', id='textarea-state-example-button', n_clicks=0),
+    html.Br(),
+    html.Div(id='textarea-state-example-output', style={'whiteSpace': 'pre-line'}),
+    dcc.DatePickerRange(
+        id='my-date-picker-range',
+        min_date_allowed=date(1995, 8, 5),
+        max_date_allowed=date.now(),
+        initial_visible_month=date(2017, 8, 5),
+        end_date=date(2017, 8, 25)
+    ),
+    html.Div(id='output-container-date-picker-range'),
+    # dcc.Dropdown(id='country_dd',
+    #     # Set the available options with noted labels and values
+    #     # stock input 
+    #     options=[{'label':stock, 'value':stock} for stock in ticker_list],
+    #         style={'width':'200px', 'margin':'0 auto'}),
     
     html.Br()
         ])
@@ -67,12 +83,17 @@ app.layout = html.Div([
 @app.callback(
     # Set the input and output of the callback to link the dropdown to the graph
     Output(component_id='graph', component_property='figure'),
-    Input(component_id='country_dd', component_property='value')
+    Input('textarea-state-example-button', 'n_clicks'),
+    State('textarea-state-example', 'value')
+
 )
-def customize_inputs(inputs):
-    if inputs == None:
+def customize_inputs(n_clicks,inputs):
+    
+    if inputs == None or inputs == '' or n_clicks <= 0:
         inputs = 'FB'
-    stock = yf.Ticker(inputs)  # Company name
+    
+    stock = yf.Ticker(inputs)
+      # Company name
 # get last 5 years of data
     '''
     nio = yf.Ticker('inputs')
