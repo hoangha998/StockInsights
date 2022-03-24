@@ -8,7 +8,7 @@ import yfinance as yf
 import matplotlib.pyplot as plt
 
 
-ticker_list = ['IBM', 'MSFT', 'AAPL', 'AMZN']
+
 # for testing 
 import math
 import numpy as np
