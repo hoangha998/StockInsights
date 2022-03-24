@@ -68,7 +68,7 @@ app.layout = html.Div([
         min_date_allowed=date(1995, 8, 5),
         max_date_allowed=date.now(),
         initial_visible_month=date(2017, 8, 5),
-        end_date=date(2017, 8, 25)
+    
     ),
     html.Div(id='output-container-date-picker-range'),
     # dcc.Dropdown(id='country_dd',
