@@ -1,7 +1,7 @@
 from dash import Dash, html, dcc
 import plotly.express as px
 import pandas as pd
-from datetime import date
+from datetime import date, datetime, timedelta
 from dash.dependencies import Input, Output, State
 from plotly.subplots import make_subplots
 import yfinance as yf
@@ -16,7 +16,7 @@ from sklearn.preprocessing import MinMaxScaler
 #from keras.models import Sequential
 #from keras.layers import Dense, LSTM
 
-
+ticker = 'FB'
 
 # use this to change the ticker  
 
@@ -65,9 +65,9 @@ app.layout = html.Div([
     html.Div(id='textarea-state-example-output', style={'whiteSpace': 'pre-line'}),
     dcc.DatePickerRange(
         id='my-date-picker-range',
-        min_date_allowed=date(1995, 8, 5),
-        max_date_allowed=date.now(),
-        initial_visible_month=date(2017, 8, 5),
+        min_date_allowed=datetime.now() - timedelta(days=3*365),
+        max_date_allowed= datetime.now(),
+        
     
     ),
     html.Div(id='output-container-date-picker-range'),
@@ -79,6 +79,27 @@ app.layout = html.Div([
     
     html.Br()
         ])
+
+# @app.callback(
+#     Output(component_id='graph', component_property='figure'),
+#     Input('my-date-picker-range','start_date'),
+#     Input('my-date-picker-range','end_date'),
+
+# )
+# def update(start_date,end_date):
+#     print(start_date, end_date)
+# #     startDate = datetime(start_date)
+ 
+# # # endDate , as per our convenience we can modify
+# #     endDate = datetime(end_date)
+#     Information = yf.Ticker(ticker)
+ 
+# # pass the parameters as the taken dates for start and end
+#     df = Information.history(start = start_date, end = end_date)
+#     fig = px.line(df, x=df.index, y='Close', template="simple_white", title=f'{ticker} stock data')
+#     return fig
+
+
 
 @app.callback(
     # Set the input and output of the callback to link the dropdown to the graph
@@ -107,7 +128,13 @@ def customize_inputs(n_clicks,inputs):
     ''' 
     stock_data = stock.history(period="max")
 
-    fig = px.line(stock_data, x= stock_data.index, y='Close', template="simple_white", title=f'{inputs} stock data')
+    df = pd.DataFrame(stock_data)
+
+    mintime, maxtime = [df.index.min(), df.index.max()]
+
+
+
+    fig = px.line(df, x=df.index, y='Close', template="simple_white", title=f'{inputs} stock data')
     return fig
 
 
