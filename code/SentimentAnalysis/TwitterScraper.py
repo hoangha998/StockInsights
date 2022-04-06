@@ -6,8 +6,6 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
-
-
 CONSUMER_API_KEY = os.getenv('CONSUMER_API_KEY')
 CONSUMER_API_SECRET_KEY = os.getenv('CONSUMER_API_SECRET_KEY')
 ACCESS_API_KEY = os.getenv('ACCESS_API_KEY')
@@ -41,7 +39,18 @@ def twitterScraper(searchHashtagWord, numTweetsToPull, dateFrom, dateTill):
     
     list_tweets = [tweet for tweet in tweets] 
     
-    
+    i = 1
+ 
+    # we will iterate over each tweet in the
+    # list for extracting information about each tweet
+    for tweet in list_tweets:
+        username = tweet.user.screen_name
+        description = tweet.user.description
+        following = tweet.user.friends_count
+        followers = tweet.user.followers_count
+        totaltweets = tweet.user.statuses_count
+        hashtags = tweet.entities['hashtags']
+
     return tweet_df
     
 def checkDateOrder(dateFrom, dateTill):
