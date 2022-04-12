@@ -2,6 +2,8 @@ import pandas as pd
 import tweepy
 import datetime 
 
+from langdetect import detect_langs
+
 import os
 from dotenv import load_dotenv
 load_dotenv()
@@ -27,7 +29,7 @@ def twitterScraper(searchHashtagWord, numTweetsToPull, dateFrom, dateTill):
     if (isValidDate == False):
         return
     
-    tweet_df = pd.DataFrame(columns=['username', 'description', 'location', 'following', 'followers',  'totaltweets',  'retweetcount', 'text', 'date','hashtags'])
+    tweet_df = pd.DataFrame(columns=['username', 'text', 'date', 'hashtags'])
 
     tweets = tweepy.Cursor(
         api.search_tweets, 
@@ -44,12 +46,6 @@ def twitterScraper(searchHashtagWord, numTweetsToPull, dateFrom, dateTill):
     # list for extracting information about each tweet
     for tweet in list_tweets:
         username = tweet.user.screen_name
-        description = tweet.user.description
-        location = tweet.user.location
-        following = tweet.user.friends_count
-        followers = tweet.user.followers_count
-        totaltweets = tweet.user.statuses_count
-        retweetcount = tweet.retweet_count
         date = tweet.created_at
         hashtags = tweet.entities['hashtags']
         
@@ -61,10 +57,7 @@ def twitterScraper(searchHashtagWord, numTweetsToPull, dateFrom, dateTill):
         for j in range(0, len(hashtags)):
             hashtext.append(hashtags[j]['text'])
         
-        ith_tweet = [username, description,
-                             location, following,
-                             followers, totaltweets,
-                             retweetcount, text, date,hashtext]
+        ith_tweet = [username, text, date,hashtext]
                              
         tweet_df.loc[len(tweet_df)] = ith_tweet
 
@@ -105,12 +98,17 @@ dateFrom = "2022-02-23"
 dateTill = "2022-03-24"
 
 twitter_df= twitterScraper(searchHashtagWord, numTweetsToPull, dateFrom, dateTill)
-filename = 'tweets.csv'
 
+
+#Cleanse the twitter dataframe by checking how many words are in the text, is primarly english text(langdetect), two or less other hashtags, and convert hash tag to non-hashtag
+
+filename = 'tweets.csv'
 twitter_df.to_csv(filename)
 
+x = "Hello. I went to the grocery store today."
 
-
+#print(x)
+#print(detect_langs(x))
 
 
 
