@@ -39,11 +39,7 @@ def twitterScraper(searchHashtagWord, numTweetsToPull, dateFrom, dateTill):
         tweet_mode='extended').items(numTweetsToPull)
     
     list_tweets = [tweet for tweet in tweets] 
-    
-    i = 1
  
-    # we will iterate over each tweet in the
-    # list for extracting information about each tweet
     for tweet in list_tweets:
         username = tweet.user.screen_name
         date = tweet.created_at
@@ -99,11 +95,12 @@ dateTill = "2022-03-24"
 
 twitter_df= twitterScraper(searchHashtagWord, numTweetsToPull, dateFrom, dateTill)
 
-
 #Cleanse the twitter dataframe by checking how many words are in the text, is primarly english text(langdetect), two or less other hashtags, and convert hash tag to non-hashtag
 
 filename = 'tweets.csv'
 twitter_df.to_csv(filename)
+
+
 
 x = "Hello. I went to the grocery store today."
 
