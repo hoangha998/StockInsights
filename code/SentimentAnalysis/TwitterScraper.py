@@ -22,13 +22,12 @@ def cleanseDate(dataFrame, dateTill):
 
 
 def twitterScraper(searchHashtagWord, numTweetsToPull, dateFrom, dateTill):
-   
     isValidDate = checkDateOrder(dateFrom, dateTill)
    
     if (isValidDate == False):
         return
     
-    tweet_df = pd.DataFrame(columns=['username', 'description', 'location', 'following', 'followers',  'totaltweets',  'retweetcount', 'text', 'hashtags'])
+    tweet_df = pd.DataFrame(columns=['username', 'description', 'location', 'following', 'followers',  'totaltweets',  'retweetcount', 'text', 'date','hashtags'])
 
     tweets = tweepy.Cursor(
         api.search_tweets, 
@@ -46,10 +45,28 @@ def twitterScraper(searchHashtagWord, numTweetsToPull, dateFrom, dateTill):
     for tweet in list_tweets:
         username = tweet.user.screen_name
         description = tweet.user.description
+        location = tweet.user.location
         following = tweet.user.friends_count
         followers = tweet.user.followers_count
         totaltweets = tweet.user.statuses_count
+        retweetcount = tweet.retweet_count
+        date = tweet.created_at
         hashtags = tweet.entities['hashtags']
+        
+        try:
+            text = tweet.retweeted_status.full_text
+        except AttributeError:
+            text = tweet.full_text
+        hashtext = list()
+        for j in range(0, len(hashtags)):
+            hashtext.append(hashtags[j]['text'])
+        
+        ith_tweet = [username, description,
+                             location, following,
+                             followers, totaltweets,
+                             retweetcount, text, date,hashtext]
+                             
+        tweet_df.loc[len(tweet_df)] = ith_tweet
 
     return tweet_df
     
@@ -87,8 +104,10 @@ numTweetsToPull = 10
 dateFrom = "2022-02-23"
 dateTill = "2022-03-24"
 
-twitterScraper(searchHashtagWord, numTweetsToPull, dateFrom, dateTill)
+twitter_df= twitterScraper(searchHashtagWord, numTweetsToPull, dateFrom, dateTill)
+filename = 'tweets.csv'
 
+twitter_df.to_csv(filename)
 
 
 
