@@ -23,11 +23,7 @@ def cleanseDate(dataFrame, dateTill):
     return joinedTable
 
 
-def twitterScraper(searchHashtagWord, numTweetsToPull, dateFrom, dateTill):
-    isValidDate = checkDateOrder(dateFrom, dateTill)
-   
-    if (isValidDate == False):
-        return
+def twitterScraper(searchHashtagWord, numTweetsToPull, dateFrom):
     
     tweet_df = pd.DataFrame(columns=['username', 'text', 'date', 'hashtags'])
 
@@ -88,16 +84,32 @@ def checkDateOrder(dateFrom, dateTill):
     
     
 searchHashtagWord = '#Tesla'
-numTweetsToPull = 10
+numTweetsToPull = 200
 
-dateFrom = "2022-02-23"
+dateFrom = "2022-01-23"
 dateTill = "2022-03-24"
 
-twitter_df= twitterScraper(searchHashtagWord, numTweetsToPull, dateFrom, dateTill)
+#Make sure date range of tweets is valid
+isValidDate = checkDateOrder(dateFrom, dateTill)
+assert(not isValidDate == False),  "Date order logic error!"
+
+#Scrape the tweets using the provided hashtag
+twitter_df= twitterScraper(searchHashtagWord, numTweetsToPull, dateFrom)
+
+#Cleanse Adequate number of words in text
+
+#Cleanse Foreign words
+
+#Cleanse Number of Hashtags
+
+#Convert Hashtags to NonHashtags. 
+
+
+
 
 #Cleanse the twitter dataframe by checking how many words are in the text, is primarly english text(langdetect), two or less other hashtags, and convert hash tag to non-hashtag
 
-filename = 'tweets.csv'
+filename = 'raw_tweets.csv'
 twitter_df.to_csv(filename)
 
 
