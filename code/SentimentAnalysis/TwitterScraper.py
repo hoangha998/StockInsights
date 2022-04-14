@@ -8,6 +8,8 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
+from cleanseTweets import *
+
 CONSUMER_API_KEY = os.getenv('CONSUMER_API_KEY')
 CONSUMER_API_SECRET_KEY = os.getenv('CONSUMER_API_SECRET_KEY')
 ACCESS_API_KEY = os.getenv('ACCESS_API_KEY')
@@ -25,7 +27,7 @@ def cleanseDate(dataFrame, dateTill):
 
 def twitterScraper(searchHashtagWord, numTweetsToPull, dateFrom):
     
-    tweet_df = pd.DataFrame(columns=['username', 'text', 'date', 'hashtags'])
+    tweet_df = pd.DataFrame(columns=['username', 'text', 'date'])
 
     tweets = tweepy.Cursor(
         api.search_tweets, 
@@ -49,7 +51,7 @@ def twitterScraper(searchHashtagWord, numTweetsToPull, dateFrom):
         for j in range(0, len(hashtags)):
             hashtext.append(hashtags[j]['text'])
         
-        ith_tweet = [username, text, date,hashtext]
+        ith_tweet = [username, text, date]
                              
         tweet_df.loc[len(tweet_df)] = ith_tweet
 
@@ -96,22 +98,16 @@ assert(not isValidDate == False),  "Date order logic error!"
 #Scrape the tweets using the provided hashtag
 twitter_df= twitterScraper(searchHashtagWord, numTweetsToPull, dateFrom)
 
-#Cleanse Adequate number of words in text
+#For Testing Purpose
+#filename = 'raw_tweets.csv'
+#twitter_df.to_csv(filename)
 
-#Cleanse Foreign words
+#For Testing Purpose
+rawDataFrame = pd.read_csv("raw_tweets.csv")
 
-#Cleanse Number of Hashtags
-
-#Convert Hashtags to NonHashtags. 
-
-
-
-
-#Cleanse the twitter dataframe by checking how many words are in the text, is primarly english text(langdetect), two or less other hashtags, and convert hash tag to non-hashtag
-
-filename = 'raw_tweets.csv'
-twitter_df.to_csv(filename)
-
+#Cleanse tweets
+cleansedDataFrame = cleanseTweets(rawDataFrame)
+print(cleansedDataFrame)
 
 
 x = "Hello. I went to the grocery store today."
