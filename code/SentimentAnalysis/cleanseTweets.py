@@ -8,7 +8,6 @@ load_dotenv()
 
 import re
 
-import preprocessor as p #preprocessor package will remove emojis, mentions, and URLs from tweets.
 from wordsegment import load, segment #wordsegment package splits multiword hashtags into individual words.
 
 #1. Cleanse webadresses (remove webaddresses from the text)
@@ -19,10 +18,14 @@ from wordsegment import load, segment #wordsegment package splits multiword hash
 #6. Cleanse Time off date
 #7. Cleanse hashtag (convert hashtags to words, Remove hashtags at the end of words)
 
+ 
+def cleanseRepeatedTweets(input_df):#Cleanse repeated tweets and retweets
+    return (input_df.drop_duplicates(subset='text', keep="first"))
+
 def cleanseWebAddresses(inputString):#Removes any video links or hyper links from the tweet text
     return (re.sub('http://\S+|https://\S+', '', inputString))
 
-def cleanseDollarSign(input_df): #Removes company stock ticker ($) from tweet text
+def cleanseDollarSign(inputString): #Removes company stock ticker ($) from tweet text
     return (re.sub("$[A-Za-z0-9_]+","", inputString))
 
 def cleanseMention(inputString): #Removes @(username) from the tweet text
@@ -38,6 +41,8 @@ def cleanseHashtag(inputString):
 
 
 def cleanseTweets(raw_df):
+    
+    raw_df = cleanseRepeatedTweets(raw_df)
     
     for index, row in raw_df.iterrows():
         text = row['text']
