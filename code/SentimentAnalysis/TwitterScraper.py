@@ -103,17 +103,13 @@ twitter_df= twitterScraper(searchHashtagWord, numTweetsToPull, dateFrom)
 #twitter_df.to_csv(filename)
 
 #For Testing Purpose
-rawDataFrame = pd.read_csv("raw_tweets.csv")
+rawDataFrame = pd.read_csv("test_tweet.csv")
 
 #Cleanse tweets
 cleansedDataFrame = cleanseTweets(rawDataFrame)
-print(cleansedDataFrame)
+#print(cleansedDataFrame)
 
 
-x = "Hello. I went to the grocery store today."
-
-#print(x)
-#print(detect_langs(x))
 
 
 
