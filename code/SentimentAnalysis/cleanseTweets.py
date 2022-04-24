@@ -41,9 +41,9 @@ def cleanseDate(inputString): #Removes the time information from the date string
     
 def cleanseTweets(raw_df):
     
-    raw_df = cleanseRepeatedTweets(raw_df)
+    cleansed_df = cleanseRepeatedTweets(raw_df)
     
-    for index, row in raw_df.iterrows():
+    for index, row in cleansed_df.iterrows():
     
         #Cleanse dataframe 'text' column
         text = row['text']
@@ -52,18 +52,16 @@ def cleanseTweets(raw_df):
         cleansedString = cleanseDollarSign(cleansedString)
         cleansedString = cleanseMention(cleansedString)
         cleansedString = cleanseNonEnglishChar(cleansedString)
-        raw_df.at[index, 'text'] = cleansedString #Reassign cleansed text back into the corresponding 'text' column in the dataframe
+        cleansed_df.at[index, 'text'] = cleansedString #Reassign cleansed text back into the corresponding 'text' column in the dataframe
         
         #Cleanse dataframe 'date' column
         date = row['date']
         cleansedDate = cleanseDate(date)
-        raw_df.at[index, 'date'] = cleansedDate
-        
-        print(cleansedDate)
+        cleansed_df.at[index, 'date'] = cleansedDate
     
     
     #cleansed_df.to_csv('cleansed_df.csv')
-    #print(raw_df)
-    return raw_df
+    #print(cleansed_df)
+    return cleansed_df
     
     
