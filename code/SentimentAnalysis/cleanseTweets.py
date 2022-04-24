@@ -36,30 +36,34 @@ def cleanseNonEnglishChar(inputString): #Removes emoji ASCII, hashtag, and non-E
 def cleanseLeadingTrailingWhiteSpace(inputString): #Removes different indentation and return new lines in the text  
     return(inputString.strip())
 
-#def cleanseDateTime(inputString): #Removes the time 
-
-
+def cleanseDate(inputString): #Removes the time information from the date string
+    return(re.findall('\d{4}-\d{2}-\d{2}', inputString)[0])
+    
 def cleanseTweets(raw_df):
     
     raw_df = cleanseRepeatedTweets(raw_df)
-    print(raw_df.shape)
     
     for index, row in raw_df.iterrows():
+    
+        #Cleanse dataframe 'text' column
         text = row['text']
         cleansedString = cleanseWebAddresses(text)
         cleansedString = cleanseLeadingTrailingWhiteSpace(cleansedString)
         cleansedString = cleanseDollarSign(cleansedString)
         cleansedString = cleanseMention(cleansedString)
         cleansedString = cleanseNonEnglishChar(cleansedString)
+        raw_df.at[index, 'text'] = cleansedString #Reassign cleansed text back into the corresponding 'text' column in the dataframe
         
-        raw_df.at[index,'text'] = cleansedString
+        #Cleanse dataframe 'date' column
+        date = row['date']
+        cleansedDate = cleanseDate(date)
+        raw_df.at[index, 'date'] = cleansedDate
         
-        print(cleansedString)
-        print("line")
+        print(cleansedDate)
     
     
     #cleansed_df.to_csv('cleansed_df.csv')
-    print(raw_df)
+    #print(raw_df)
     return raw_df
     
     
