@@ -1,9 +1,6 @@
 import pandas as pd
 import tweepy
 import datetime 
-
-from langdetect import detect_langs
-
 import os
 from dotenv import load_dotenv
 load_dotenv()

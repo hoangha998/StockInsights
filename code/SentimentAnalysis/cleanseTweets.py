@@ -1,25 +1,27 @@
 import pandas as pd
 import tweepy
 import datetime 
-
 import os
-from dotenv import load_dotenv
-load_dotenv()
-
+import sys
 import re
 
-from wordsegment import load, segment #wordsegment package splits multiword hashtags into individual words.
+path = os.getcwd()
+parentPath = os.path.dirname(path)
+pathToNLTK=parentPath+'/SentimentAnalysis'+'/nltk_data'
 
-#1. Cleanse webadresses (remove webaddresses from the text)
-#2. Cleanse Dollarsign(stock ticker symbols)
-#3. Cleanse Mention (@)
-#4. Cleanse Non-English Characters(Emojis, hashtags, foreign language char)
-#5. Cleanse Adequate number of words in text (remove the tweet if it has less than 6 words)
-#6. Cleanse Time off date
-
+import nltk
+from nltk.corpus import stopwords
+nltk.data.path.append(pathToNLTK) #Set path of nltk library to current repository
+from nltk.tokenize import word_tokenize
 
 def cleanseRepeatedTweets(input_df):#Cleanse repeated tweets and retweets
     return (input_df.drop_duplicates(subset='text', keep="first"))
+    
+def cleanseStopWords(inputString):
+    text_tokens = word_tokenize(inputString)
+    tokens_without_sw = [word for word in text_tokens if not word in stopwords.words()]
+    filtered_sentence = (" ").join(tokens_without_sw)
+    return (filtered_sentence)
 
 def cleanseWebAddresses(inputString):#Removes any video links or hyper links from the tweet text
     return (re.sub('http://\S+|https://\S+', '', inputString))
@@ -49,6 +51,7 @@ def cleanseTweets(raw_df):
         text = row['text']
         cleansedString = cleanseWebAddresses(text)
         cleansedString = cleanseLeadingTrailingWhiteSpace(cleansedString)
+        cleansedString = cleanseStopWords(cleansedString)
         cleansedString = cleanseDollarSign(cleansedString)
         cleansedString = cleanseMention(cleansedString)
         cleansedString = cleanseNonEnglishChar(cleansedString)
@@ -61,7 +64,7 @@ def cleanseTweets(raw_df):
     
     
     #cleansed_df.to_csv('cleansed_df.csv')
-    #print(cleansed_df)
+    print(cleansed_df)
     return cleansed_df
     
     
