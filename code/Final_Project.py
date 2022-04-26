@@ -5,13 +5,13 @@ from datetime import date, datetime, timedelta
 from dash.dependencies import Input, Output, State
 from plotly.subplots import make_subplots
 import yfinance as yf
+import numpy as np
 import matplotlib.pyplot as plt
 
 
 
 # for testing 
 import math
-import numpy as np
 from sklearn.preprocessing import MinMaxScaler
 #from keras.models import Sequential
 #from keras.layers import Dense, LSTM
@@ -129,12 +129,14 @@ def customize_inputs(n_clicks,inputs):
     stock_data = stock.history(period="max")
 
     df = pd.DataFrame(stock_data)
+    df['SMA50'] = df['Close'].rolling(50).mean()
+    df['SMA200'] = df['Close'].rolling(200).mean()
 
-    mintime, maxtime = [df.index.min(), df.index.max()]
+
+    time = [df.index.min(), df.index.max()]
 
 
-
-    fig = px.line(df, x=df.index, y='Close', template="simple_white", title=f'{inputs} stock data')
+    fig = px.line(df, x=df.index, y=['Close','SMA200','SMA50'], template="simple_white", title=f'{inputs} stock data')
     return fig
 
 
