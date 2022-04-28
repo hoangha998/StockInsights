@@ -26,11 +26,15 @@ def cleanseStopWords(inputString):
 def cleanseWebAddresses(inputString):#Removes any video links or hyper links from the tweet text
     return (re.sub('http://\S+|https://\S+', '', inputString))
 
+def cleanseHashtag(inputString): #Removes Hashtags(#) from tweet text.
+    return (re.sub("\#[A-Za-z0-9_]+","", inputString))
+
 def cleanseDollarSign(inputString): #Removes company stock ticker ($) from tweet text
-    return (re.sub("\$[A-Za-z0-9_]+","", inputString))
+    print("yo")
+    return (re.sub(r"\$ [A-Za-z0-9_]+","", inputString))
 
 def cleanseMention(inputString): #Removes @(username) from the tweet text
-    return (re.sub("@[A-Za-z0-9_]+","", inputString))
+    return (re.sub("\@ [A-Za-z0-9_]+","", inputString))
     
 def cleanseNonEnglishChar(inputString): #Removes emoji ASCII, hashtag, and non-English foreign char. Gets string with char between a to z or digits and whitespace characters.
     return(re.sub(r'[^\w\s]', '', inputString))
@@ -51,6 +55,7 @@ def cleanseTweets(raw_df):
         text = row['text']
         cleansedString = cleanseWebAddresses(text)
         cleansedString = cleanseLeadingTrailingWhiteSpace(cleansedString)
+        cleansedString = cleanseHashtag(cleansedString)
         cleansedString = cleanseStopWords(cleansedString)
         cleansedString = cleanseDollarSign(cleansedString)
         cleansedString = cleanseMention(cleansedString)
@@ -64,7 +69,7 @@ def cleanseTweets(raw_df):
     
     
     #cleansed_df.to_csv('cleansed_df.csv')
-    print(cleansed_df)
+    #print(cleansed_df)
     return cleansed_df
     
     

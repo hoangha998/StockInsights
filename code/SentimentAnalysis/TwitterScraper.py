@@ -100,13 +100,13 @@ twitter_df= twitterScraper(searchHashtagWord, numTweetsToPull, dateFrom)
 #twitter_df.to_csv(filename)
 
 #For Testing Purpose
-#rawDataFrame = pd.read_csv("test_tweet.csv")
-rawDataFrame = pd.read_csv("raw_tweets.csv")
+rawDataFrame = pd.read_csv("test_tweet.csv")
+#rawDataFrame = pd.read_csv("raw_tweets.csv")
 
 #Cleanse tweets
 cleansedDataFrame = cleanseTweets(rawDataFrame)
 cleansedDataFrame.to_csv("cleansed_df.csv")
-#print(cleansedDataFrame)
+print(cleansedDataFrame)
 
 
 
