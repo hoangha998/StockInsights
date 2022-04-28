@@ -62,6 +62,7 @@ app.layout = html.Div([
     ),
     html.Button('Submit', id='textarea-state-example-button', n_clicks=0),
     html.Br(),
+    html.Div(children=[dcc.Graph(id='graph2')]),
     html.Div(id='textarea-state-example-output', style={'whiteSpace': 'pre-line'}),
     dcc.DatePickerRange(
         id='my-date-picker-range',
@@ -103,7 +104,7 @@ app.layout = html.Div([
 
 @app.callback(
     # Set the input and output of the callback to link the dropdown to the graph
-    Output(component_id='graph', component_property='figure'),
+    Output(component_id='graph2', component_property='figure'),
     Input('textarea-state-example-button', 'n_clicks'),
     State('textarea-state-example', 'value')
 
