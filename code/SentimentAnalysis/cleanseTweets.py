@@ -1,28 +1,14 @@
 import pandas as pd
 import tweepy
 import datetime 
-import os
-import sys
 import re
 
-path = os.getcwd()
-parentPath = os.path.dirname(path)
-pathToNLTK=parentPath+'/SentimentAnalysis'+'/nltk_data'
-
-import nltk
-from nltk.corpus import stopwords
-nltk.data.path.append(pathToNLTK) #Set path of nltk library to current repository
-from nltk.tokenize import word_tokenize
+#For Tokenization
+from gensim.utils import simple_preprocess
 
 def cleanseRepeatedTweets(input_df):#Cleanse repeated tweets and retweets
     return (input_df.drop_duplicates(subset='text', keep="first"))
     
-def cleanseStopWords(inputString):
-    text_tokens = word_tokenize(inputString)
-    tokens_without_sw = [word for word in text_tokens if not word in stopwords.words()]
-    filtered_sentence = (" ").join(tokens_without_sw)
-    return (filtered_sentence)
-
 def cleanseWebAddresses(inputString):#Removes any video links or hyper links from the tweet text
     return (re.sub('http://\S+|https://\S+', '', inputString))
 
@@ -30,11 +16,10 @@ def cleanseHashtag(inputString): #Removes Hashtags(#) from tweet text.
     return (re.sub("\#[A-Za-z0-9_]+","", inputString))
 
 def cleanseDollarSign(inputString): #Removes company stock ticker ($) from tweet text
-    print("yo")
-    return (re.sub(r"\$ [A-Za-z0-9_]+","", inputString))
+    return (re.sub(r"\$[A-Za-z0-9_]+","", inputString))
 
 def cleanseMention(inputString): #Removes @(username) from the tweet text
-    return (re.sub("\@ [A-Za-z0-9_]+","", inputString))
+    return (re.sub("\@[A-Za-z0-9_]+","", inputString))
     
 def cleanseNonEnglishChar(inputString): #Removes emoji ASCII, hashtag, and non-English foreign char. Gets string with char between a to z or digits and whitespace characters.
     return(re.sub(r'[^\w\s]', '', inputString))
@@ -56,7 +41,6 @@ def cleanseTweets(raw_df):
         cleansedString = cleanseWebAddresses(text)
         cleansedString = cleanseLeadingTrailingWhiteSpace(cleansedString)
         cleansedString = cleanseHashtag(cleansedString)
-        cleansedString = cleanseStopWords(cleansedString)
         cleansedString = cleanseDollarSign(cleansedString)
         cleansedString = cleanseMention(cleansedString)
         cleansedString = cleanseNonEnglishChar(cleansedString)
@@ -66,10 +50,13 @@ def cleanseTweets(raw_df):
         date = row['date']
         cleansedDate = cleanseDate(date)
         cleansed_df.at[index, 'date'] = cleansedDate
-    
-    
-    #cleansed_df.to_csv('cleansed_df.csv')
-    #print(cleansed_df)
+  
     return cleansed_df
+    
+    
+def tokenizeTweets(cleansed_df):
+    cleansed_df['tokenized_text'] = [simple_preprocess(line, deacc=True) for line in cleansed_df['text']] 
+    tokenized_df=cleansed_df
+    return tokenized_df
     
     
