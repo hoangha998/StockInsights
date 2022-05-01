@@ -53,10 +53,3 @@ def cleanseTweets(raw_df):
   
     return cleansed_df
     
-    
-def tokenizeTweets(cleansed_df):
-    cleansed_df['tokenized_text'] = [simple_preprocess(line, deacc=True) for line in cleansed_df['text']] 
-    tokenized_df=cleansed_df
-    return tokenized_df
-    
-    

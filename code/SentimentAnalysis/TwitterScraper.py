@@ -67,12 +67,10 @@ rawDataFrame = pd.read_csv("test_tweet.csv")
 cleansedDataFrame = cleanseTweets(rawDataFrame)
 #cleansedDataFrame.to_csv("cleansed_df.csv")
 
-#Tokenize Tweets
-tokenizedDataFrame = tokenizeTweets(cleansedDataFrame)
-tokenizedDataFrame.to_csv("tokenized_df.csv")
-
-#Apply Word2Vec Sentiment Analysis to Tweet Text
-print(cleansedDataFrame)
+#Run Sentiment Analysis on the Tweets
+sentimentDataFrame = sentimentAnalyze(cleansedDataFrame) 
+cleansedDataFrame.to_csv("sentiment_df.csv")
+print(sentimentDataFrame)
 
 
 
