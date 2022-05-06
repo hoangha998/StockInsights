@@ -11,7 +11,8 @@ from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
 def sentimentAnalyze(cleansedTweets_df):
 
-    for index, row in cleansedTweets_df['text'].iteritems():
+    analyzedTweets_df = cleansedTweets_df.copy()
+    for index, row in analyzedTweets_df['text'].iteritems():
         score = SentimentIntensityAnalyzer().polarity_scores(row)
         neg = score['neg']
         neu = score['neu']
@@ -19,16 +20,15 @@ def sentimentAnalyze(cleansedTweets_df):
         comp = score['compound']
      
         if neg > pos:
-            cleansedTweets_df.loc[index, 'sentiment'] = "negative"
+            analyzedTweets_df.loc[index, 'sentiment'] = "negative"
         elif pos > neg:
-            cleansedTweets_df.loc[index, 'sentiment'] = "positive"
+            analyzedTweets_df.loc[index, 'sentiment'] = "positive"
         else:
-            cleansedTweets_df.loc[index, 'sentiment'] = "neutral"
+            analyzedTweets_df.loc[index, 'sentiment'] = "neutral"
             
-        cleansedTweets_df.loc[index, 'neg'] = neg
-        cleansedTweets_df.loc[index, 'neu'] = neu
-        cleansedTweets_df.loc[index, 'pos'] = pos
-        cleansedTweets_df.loc[index, 'compound'] = comp
+        analyzedTweets_df.loc[index, 'neg'] = neg
+        analyzedTweets_df.loc[index, 'neu'] = neu
+        analyzedTweets_df.loc[index, 'pos'] = pos
+        analyzedTweets_df.loc[index, 'compound'] = comp
         
-    analyzedTweets_df=cleansedTweets_df
     return analyzedTweets_df
