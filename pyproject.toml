@@ -7,6 +7,10 @@ authors = ["Tyler Schlichenmeyer <tyler.schlichenmeyer@gmail.com>"]
 [tool.poetry.dependencies]
 python = "^3.9"
 Faker = "^11.3.0"
+tweepy = "^4.8.0"
+langdetect = "^1.0.9"
+Flask = "^2.1.2"
+pandas = "^1.4.2"
 
 [tool.poetry.dev-dependencies]
 
