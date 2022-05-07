@@ -3,20 +3,20 @@
 <script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
-  function cb1(selection){
+  function cb(selection){
     $.getJSON({
-      url: "/callbacktest2", data: {'data': selection}, success: function(result) {
+      url: "/callbacktest", data: {'data': selection}, success: function(result) {
         Plotly.newPlot('chart', result, {});;
       }
     })
   }
 </script>
  <body>
+   
   <img src="https://moranlab.wustl.edu/files/2018/12/Schlichenmeyer-Tyler-2n72o5s-280x386.jpg"/> 
   <div id='chart' class='chart'”></div>
-  <input type="date" id="start" name="trip-start"
-       value="2022-04-30"
-       min="2022-01-01" max="2022-05-10" id="dt" onchange="cb1(this.value)" >
+  <input type = "text" id="cname" name = "cname" onchange = "cb(this.value)">
+
 </body>
 
 <script type='text/javascript'>
