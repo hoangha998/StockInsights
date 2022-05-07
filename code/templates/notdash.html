@@ -1,0 +1,15 @@
+<!doctype html>
+<html>
+ <body>
+  <img src="https://moranlab.wustl.edu/files/2018/12/Schlichenmeyer-Tyler-2n72o5s-280x386.jpg"/> 
+  <div id='chart' class='chart'”></div>
+</body>
+<script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
+<script type='text/javascript'>
+  var graphs = {{graphJSON | safe}};
+  Plotly.plot('chart',graphs,{});
+</script>
+
+<h1><a href="/">Go Back</a></h1>
+
+</html>
