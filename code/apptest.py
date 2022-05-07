@@ -38,6 +38,8 @@ entry = {'Company': 'Tesla', 'Date': '2022-04-29', 'Count Type': 'Negative', 'Co
 df2 = df2.append(entry, ignore_index = True)
 #df.loc[df['column_name'] == some_value]
 
+
+
 app = Flask(__name__)
 @app.route('/')
 def index():
