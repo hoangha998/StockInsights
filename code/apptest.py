@@ -106,8 +106,8 @@ def callbacktest(company = 'Tesla'):
     return graphJSON
 
 
-df3 = scrape('#Tesla', 200)
-df4 = createdfforapp(df3,'Tesla')
+# df3 = scrape('#Tesla', 200)
+# df4 = createdfforapp(df3,'Tesla')
 @app.route('/posnegcount')
 def posneg():
     return render_template('notdash.html', graphJSON=callbacktest2())
@@ -116,8 +116,15 @@ def posneg():
 def cb1():
     return callbacktest2(request.args.get('data'))
 
-def callbacktest2(date = '2022-05-07'):
-    fig = px.bar(df4[df4['Date']==date], x='Company', y='Count', color='Count Type', barmode='group')
+# def callbacktest2(date = '2022-05-07'):
+#     fig = px.bar(df4[df4['Date']==date], x='Company', y='Count', color='Count Type', barmode='group')
+#     graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+#     #return render_template('notdash.html', graphJSON=graphJSON)
+#     return graphJSON
+def callbacktest2(company = 'Tesla'):
+    df3 = scrape('#' + company, 200)
+    df4 = createdfforapp(df3,company)
+    fig = px.bar(df4[df4['Company']==company], x='Date', y='Count', color='Count Type', barmode='group')
     graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
     #return render_template('notdash.html', graphJSON=graphJSON)
     return graphJSON
