@@ -13,7 +13,7 @@ def scrapeAndCleanse(nameOfStock):#Cleanse repeated tweets and retweets
     searchHashtagWord = '#'+nameOfStock
     print(searchHashtagWord)
     numTweetsToPull = 100
-    dateFrom = "2022-01-23"
+    dateFrom = "2022-01-01"
 
     #Scrape the tweets using the provided hashtag
     ##twitter_df= twitterScraper(searchHashtagWord, numTweetsToPull, dateFrom)
