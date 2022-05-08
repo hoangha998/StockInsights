@@ -68,17 +68,20 @@ def cb():
 
 def compoundAverageCallbackTest(company = 'Tesla'):
     compoundSentiment_df = scrapeAndCleanse(company)
-    compoundSentiment_df['Company'] = company
-    
     compoundSentiment_df.drop('text', axis=1, inplace=True)
     compoundSentiment_df.drop('sentiment', axis=1, inplace=True)
     compoundSentiment_df.drop('neg', axis=1, inplace=True)
     compoundSentiment_df.drop('neu', axis=1, inplace=True)
     compoundSentiment_df.drop('pos', axis=1, inplace=True)
     
-    print(compoundSentiment_df)
+    compoundSentiment_df = compoundSentiment_df.groupby('date')['compound'].mean()
+    compoundSentiment_df = compoundSentiment_df.to_frame().reset_index()
     
-    fig = px.line(compoundSentiment_df[compoundSentiment_df['Company']==company], x='date', y='compound', title='Compound Average per Day for One Company')
+    compoundSentiment_df.set_axis(["Date", "Compound Sentiment" ], axis=1, inplace=True)
+    compoundSentiment_df['Company'] = company
+    print(list(compoundSentiment_df.columns))
+    
+    fig = px.line(compoundSentiment_df[compoundSentiment_df['Company']==company], x='Date', y='Compound Sentiment', title='Compound Average per Day for One Company')
     graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
     return graphJSON
 
