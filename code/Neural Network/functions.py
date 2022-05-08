@@ -2,6 +2,8 @@
 
 import yfinance as yf
 import numpy as np
+import datetime
+from tensorflow.keras.models import model_from_json
 
 def get_target(cur_avg, next_avg, threshold=0.05):
     abs_price_change = abs(next_avg-cur_avg)*100/cur_avg
@@ -104,8 +106,8 @@ def evaluate_on_ticker(model, ticker):
     PREDICT_RANGE = 1
     START_DATE = '2020-7-30'
     END_DATE = '2020-8-2'
-    NO_CHANGE_THRESHOLD = 0.1
     RAW_INTERVAL = "15m"
+    NO_CHANGE_THRESHOLD = 0.1 # percentage of ticker's price
     transformed_data = transform_data_from_ticker(ticker, START_DATE, END_DATE, EVAL_RANGE, PREDICT_RANGE, NO_CHANGE_THRESHOLD)
     if transformed_data != None:
         cur_data, cur_targets = transformed_data
@@ -114,4 +116,11 @@ def evaluate_on_ticker(model, ticker):
         evaluate(model, cur_targets, y_p, binary=False)
     else:
         print('Ticker not available or is penny stock')
+
+    
+
+
+    
+    
+    
     
