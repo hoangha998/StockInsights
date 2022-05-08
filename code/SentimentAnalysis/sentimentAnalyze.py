@@ -7,6 +7,8 @@ path = os.getcwd()
 parentPath = os.path.dirname(path)
 pathToNLTK=parentPath+'/SentimentAnalysis'+'/nltk_data'
 nltk.data.path.append(pathToNLTK) #Set path of nltk library to current repository
+nltk.download('vader_lexicon')
+
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
 def sentimentAnalyze(cleansedTweets_df):

@@ -4,7 +4,7 @@ import datetime
 import re
 
 #For Tokenization
-from gensim.utils import simple_preprocess
+# from gensim.utils import simple_preprocess
 
 def cleanseRepeatedTweets(input_df):#Cleanse repeated tweets and retweets
     return (input_df.drop_duplicates(subset='text', keep="first"))
@@ -28,7 +28,9 @@ def cleanseLeadingTrailingWhiteSpace(inputString): #Removes different indentatio
     return(inputString.strip())
 
 def cleanseDate(inputString): #Removes the time information from the date string
-    return(re.findall('\d{4}-\d{2}-\d{2}', inputString)[0])
+    #return(re.findall('\d{4}-\d{2}-\d{2}', inputString)[0])
+    
+    return (re.sub(r" \d{1,2}:\d{2}:\d{2}\+\d{2}:\d{2}","", str(inputString)))
     
 def cleanseTweets(raw_df):
     
