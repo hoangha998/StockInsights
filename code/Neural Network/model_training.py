@@ -5,10 +5,10 @@ from tensorflow.keras import models, layers, optimizers, metrics
 import numpy as np
 from functions import evaluate_on_ticker, evaluate, get_last_step_predictions # custom-made helper functions
 
-X_train = np.load('train_data.npy')
-y_train = np.load('train_targets.npy')
-X_test = np.load('test_data.npy')
-y_test = np.load('test_targets.npy')
+X_train = np.load('data/train_data.npy')
+y_train = np.load('data/train_targets.npy')
+X_test = np.load('data/test_data.npy')
+y_test = np.load('data/test_targets.npy')
 
 
 # Shuffle and split the data set
@@ -51,12 +51,16 @@ def last_step_accuracy(Y_true, Y_pred):
 optimizer = optimizers.Adam(lr=0.01)
 model.compile(loss='sparse_categorical_crossentropy', optimizer=optimizer, metrics=[last_step_accuracy])
 
+# Train the model
 history = model.fit(X_train, y_train, validation_data=(X_test, y_test), epochs=15)
 
-    
+# Model evaluation
 evaluate(model, X_test, y_test)
 
-
-
+# Save model as JSON and weights as h5
+model_as_json = model.to_json()
+with open("trained_model/model.json", "w") as model_file:
+    model_file.write(model_as_json)
+model.save_weights("trained_model/weights.h5")
 
 
