@@ -4,10 +4,12 @@ import json
 import plotly
 import plotly.express as px
 
+from TwitterScraper import *
+
 #SOURCES: https://towardsdatascience.com/web-visualization-with-plotly-and-flask-3660abf9c946
 #https://towardsdatascience.com/an-interactive-web-dashboard-with-plotly-and-flask-c365cdec5e3f 
 
-df = pd.read_csv(r'code/SentimentAnalysis/sentiment_df.csv')
+df = pd.read_csv('sentiment_df.csv')
 df = df[['date', 'sentiment', 'compound']]
 df2 = pd.DataFrame({
     'Company': [],
@@ -36,43 +38,50 @@ entry = {'Company': 'Tesla', 'Date': '2022-04-29', 'Count Type': 'Positive', 'Co
 df2 = df2.append(entry, ignore_index = True)
 entry = {'Company': 'Tesla', 'Date': '2022-04-29', 'Count Type': 'Negative', 'Count': 0, 'Compound Average': -0.2}
 df2 = df2.append(entry, ignore_index = True)
-#df.loc[df['column_name'] == some_value]
-
-
 
 app = Flask(__name__)
 @app.route('/')
 def index():
     return render_template('index.html')
 
-@app.route('/compavg')
-def compavg():
-    return render_template('notdash2.html', graphJSON=callbacktest())
-
-@app.route('/callbacktest', methods=['POST', 'GET'])
-def cb():
-    return callbacktest(request.args.get('data'))
-
-def callbacktest(company = 'Tesla'):
-    fig = px.line(df2[df2['Company']==company], x='Date', y='Compound Average', title='Compound Average per Day for One Company')
-    graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
-    #return render_template('notdash.html', graphJSON=graphJSON)
-    return graphJSON
-
-
 @app.route('/posnegcount')
 def posneg():
-    return render_template('notdash.html', graphJSON=callbacktest2())
+    return render_template('positive_negative.html', graphJSON=positiveNegativeCallbackTest())
 
-@app.route('/callbacktest2', methods=['POST', 'GET'])
+@app.route('/positiveNegativeCallbackTest', methods=['POST', 'GET'])
 def cb1():
-    return callbacktest2(request.args.get('data'))
+    return positiveNegativeCallbackTest(request.args.get('data'))
 
-def callbacktest2(date = '2022-04-30'):
+def positiveNegativeCallbackTest(date = '2022-04-30'):
     fig = px.bar(df2[df2['Date']==date], x='Company', y='Count', color='Count Type', barmode='group')
     graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
     #return render_template('notdash.html', graphJSON=graphJSON)
     return graphJSON
+
+@app.route('/compavg')
+def compavg():
+    return render_template('compound_average.html', graphJSON=compoundAverageCallbackTest())
+    
+@app.route('/compoundAverageCallbackTest', methods=['POST', 'GET'])
+def cb():
+    return compoundAverageCallbackTest(request.args.get('data'))
+
+def compoundAverageCallbackTest(company = 'Tesla'):
+    compoundSentiment_df = scrapeAndCleanse(company)
+    compoundSentiment_df['Company'] = company
+    
+    compoundSentiment_df.drop('text', axis=1, inplace=True)
+    compoundSentiment_df.drop('sentiment', axis=1, inplace=True)
+    compoundSentiment_df.drop('neg', axis=1, inplace=True)
+    compoundSentiment_df.drop('neu', axis=1, inplace=True)
+    compoundSentiment_df.drop('pos', axis=1, inplace=True)
+    
+    print(compoundSentiment_df)
+    
+    fig = px.line(compoundSentiment_df[compoundSentiment_df['Company']==company], x='date', y='compound', title='Compound Average per Day for One Company')
+    graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+    return graphJSON
+
 
 if __name__ == "__main__":
     app.run()

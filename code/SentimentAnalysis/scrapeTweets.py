@@ -13,7 +13,7 @@ api = tweepy.API(auth)
 
 def twitterScraper(searchHashtagWord, numTweetsToPull, dateFrom):
     
-    tweet_df = pd.DataFrame(columns=['username', 'text', 'date'])
+    tweet_df = pd.DataFrame(columns=['text', 'date'])
 
     tweets = tweepy.Cursor(
         api.search_tweets, 
@@ -25,7 +25,6 @@ def twitterScraper(searchHashtagWord, numTweetsToPull, dateFrom):
     list_tweets = [tweet for tweet in tweets] 
  
     for tweet in list_tweets:
-        username = tweet.user.screen_name
         date = tweet.created_at
         hashtags = tweet.entities['hashtags']
         
@@ -37,7 +36,7 @@ def twitterScraper(searchHashtagWord, numTweetsToPull, dateFrom):
         for j in range(0, len(hashtags)):
             hashtext.append(hashtags[j]['text'])
         
-        ith_tweet = [username, text, date]
+        ith_tweet = [text, date]
                              
         tweet_df.loc[len(tweet_df)] = ith_tweet
 
