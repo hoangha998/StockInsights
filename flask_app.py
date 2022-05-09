@@ -14,6 +14,7 @@ def hello_world():
 
 @app.route("/Andrew")
 def andrew():
+    
 	variable = 100
 	return render_template('andrew.html', number=variable)
 
