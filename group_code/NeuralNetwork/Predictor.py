@@ -25,11 +25,11 @@ class TrendPredictor():
         Load model structure from json file, and weights from h5 file
         Return TensorFlow model ready to be used
         '''
-        model_file = open('code/NeuralNetwork/trained_model/model.json', 'r')
+        model_file = open('group_code/NeuralNetwork/trained_model/model.json', 'r')
         model_json = model_file.read()
         model_file.close()
         loaded_model = model_from_json(model_json)
-        loaded_model.load_weights("code/NeuralNetwork/trained_model/weights.h5")
+        loaded_model.load_weights("group_code/NeuralNetwork/trained_model/weights.h5")
         return loaded_model
     
     

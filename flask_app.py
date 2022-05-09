@@ -1,11 +1,12 @@
 from flask import Flask, flash, request, redirect, url_for, jsonify, render_template, Response
-from code.TradingStyles.dash_app import get_dash_app
-from code.NeuralNetwork.Predictor import TrendPredictor
+from group_code.TradingStyles.dash_app import get_dash_app
+from group_code.NeuralNetwork.Predictor import TrendPredictor
 
 app = Flask(__name__)
 
 # initialize trend predictor 
-trend_predictor = TrendPredictor()
+#trend_predictor = TrendPredictor()
+trend_predictor = None
 
 # intialize dash app
 dash_app = get_dash_app(app)
