@@ -9,14 +9,14 @@ from cleanseTweets import *
 from scrapeTweets import *
 from sentimentAnalyze import *
 
+
 def scrapeAndCleanse(nameOfStock):#Cleanse repeated tweets and retweets
     searchHashtagWord = '#'+nameOfStock
-    print(searchHashtagWord)
-    numTweetsToPull = 100
+    numTweetsToPull = 50
     dateFrom = "2022-01-01"
 
     #Scrape the tweets using the provided hashtag
-    ##twitter_df= twitterScraper(searchHashtagWord, numTweetsToPull, dateFrom)
+    twitter_df= twitterScraper(searchHashtagWord, numTweetsToPull, dateFrom)
 
     #For Testing Purpose(Save physical df locally)
     #twitter_df.to_csv('raw_tweets.csv')
@@ -26,8 +26,8 @@ def scrapeAndCleanse(nameOfStock):#Cleanse repeated tweets and retweets
     #rawDataFrame = pd.read_csv("raw_tweets.csv")
 
     #Cleanse Tweets
-    ##cleansedDataFrame = cleanseTweets(twitter_df)
-    cleansedDataFrame = cleanseTweets(rawDataFrame)
+    cleansedDataFrame = cleanseTweets(twitter_df)
+    #cleansedDataFrame = cleanseTweets(rawDataFrame)
     #cleansedDataFrame.to_csv("cleansed_df.csv")
 
     #Run Sentiment Analysis on the Tweets
