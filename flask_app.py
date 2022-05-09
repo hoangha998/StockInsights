@@ -10,7 +10,6 @@ from group_code.TradingStyles.dash_app import get_dash_app
 from group_code.NeuralNetwork.Predictor import TrendPredictor
 
 # john's imports
-
 from posixpath import split
 from textwrap import indent
 from cProfile import label
@@ -42,7 +41,7 @@ def index():
 def trend_prediction():
     if request.method == 'POST':
         ticker = request.form.get('ticker')
-        print 'new ticker ({}) requested..'.format(ticker)
+        print('new ticker ({}) requested..'.format(ticker))
         trend_predictor.set_ticker(ticker)
         (decrease, increase, same) = trend_predictor.predict()
         increase = '{:.2f}'.format(increase * 100)
