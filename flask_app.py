@@ -121,10 +121,24 @@ def positiveNegativeCallBackTest(company = 'Tesla'):
     return graphJSON
 
 
-
 @app.route('/Zach')
 def zach():
-    return render_template('zach.html')
+    return render_template('zach.html', graphJSON=compoundSentimentCallBackTest())
+
+@app.route('/compoundSentimentCallBackTest', methods=['POST', 'GET'])
+def cb():
+    return compoundSentimentCallBackTest(request.args.get('data'))
+
+def compoundSentimentCallBackTest(company = 'Tesla'):
+    sentiment_df = scrapeAndCleanse(company)
+    sentiment_df = adjustSentimentDataFrame(sentiment_df, company)
+    print(sentiment_df)
+    
+    sentimentTitle = "Overall Twitter Sentiment for {companyName} by Date".format(companyName = company)
+    fig = px.line(sentiment_df[sentiment_df['Company']==company], x='Date', y='Compound Average', title=sentimentTitle)
+    graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+    return graphJSON
+
 
 
 @app.route('/keith')
