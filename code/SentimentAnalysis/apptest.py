@@ -33,24 +33,6 @@ app = Flask(__name__)
 @app.route('/')
 def index():
     return render_template('index.html')
-
-@app.route('/compavg')
-def compavg():
-    return render_template('compound_sentiment.html', graphJSON=compoundSentimentCallBackTest())
-
-@app.route('/compoundSentimentCallBackTest', methods=['POST', 'GET'])
-def cb():
-    return compoundSentimentCallBackTest(request.args.get('data'))
-
-def compoundSentimentCallBackTest(company = 'Tesla'):
-    sentiment_df = scrapeAndCleanse(company)
-    sentiment_df = adjustSentimentDataFrame(sentiment_df, company)
-    
-    sentimentTitle = "Overall Twitter Sentiment for {companyName} by Date".format(companyName = company)
-    fig = px.line(sentiment_df[sentiment_df['Company']==company], x='Date', y='Compound Average', title=sentimentTitle)
-    graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
-    return graphJSON
-    
     
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------    
 
@@ -65,9 +47,30 @@ def cb1():
 def positiveNegativeCallBackTest(company = 'Tesla'):
     sentiment_df = scrapeAndCleanse(company)
     sentiment_df = adjustSentimentDataFrame(sentiment_df,company)
+    print(sentiment_df)
     
     sentimentTitle = "Overall Twitter Sentiment for {companyName} by Date".format(companyName = company)
     fig = px.bar(sentiment_df[sentiment_df['Company']==company], x='Date', y='Count', color='Count Type', barmode='group',  title=sentimentTitle)
+    graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+    return graphJSON
+
+
+#------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+@app.route('/compavg')
+def compavg():
+    return render_template('compound_sentiment.html', graphJSON=compoundSentimentCallBackTest())
+
+@app.route('/compoundSentimentCallBackTest', methods=['POST', 'GET'])
+def cb():
+    return compoundSentimentCallBackTest(request.args.get('data'))
+
+def compoundSentimentCallBackTest(company = 'Tesla'):
+    sentiment_df = scrapeAndCleanse(company)
+    sentiment_df = adjustSentimentDataFrame(sentiment_df, company)
+    print(sentiment_df)
+    
+    sentimentTitle = "Overall Twitter Sentiment for {companyName} by Date".format(companyName = company)
+    fig = px.line(sentiment_df[sentiment_df['Company']==company], x='Date', y='Compound Average', title=sentimentTitle)
     graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
     return graphJSON
 
