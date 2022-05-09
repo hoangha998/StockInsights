@@ -28,7 +28,7 @@ def cleanseDate(inputString): #Removes the time information from the date string
     regexDate = str(re.sub(' \d{2}:\d{2}:\d{2}[\+]\d{2}:\d{2}', '', inputString))
     return(regexDate)
     
-def cleanseTweets(raw_df):
+def cleanse(raw_df):
     
     cleansed_df = cleanseRepeatedTweets(raw_df)
     

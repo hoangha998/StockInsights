@@ -11,7 +11,7 @@ nltk.download('vader_lexicon')
 
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
-def sentimentAnalyze(cleansedTweets_df):
+def analyze(cleansedTweets_df):
 
     analyzedTweets_df = cleansedTweets_df.copy()
     for index, row in analyzedTweets_df['text'].iteritems():

@@ -40,9 +40,9 @@ def scrapeAndCleanse(nameOfStock):#Cleanse repeated tweets and retweets
     #Scrape the tweets using the provided hashtag
     twitter_df= scrapeTweets.twitterScraper(searchHashtagWord, numTweetsToPull, dateFrom)
     #Cleanse Tweets
-    cleansedDataFrame = cleanseTweets(twitter_df)
+    cleansedDataFrame = cleanseTweets.cleanse(twitter_df)
     #Run Sentiment Analysis on the Tweets
-    sentimentDataFrame = sentimentAnalyze(cleansedDataFrame) 
+    sentimentDataFrame = sentimentAnalyze.analyze(cleansedDataFrame) 
     return sentimentDataFrame 
 def adjustSentimentDataFrame(raw_df, company):
     raw_df = raw_df[['date', 'sentiment', 'compound']]
