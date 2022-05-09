@@ -25,8 +25,7 @@ import json
 app = Flask(__name__)
 
 # initialize trend predictor
-# trend_predictor = TrendPredictor()
-
+# trend_predictor = TrendPredictor() DON'T DELETE
 trend_predictor = None
 
 # intialize dash app
