@@ -2,16 +2,22 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Stocks Information and Prediction</title>
+    <title>Stocks Insights</title>
+    <link rel="stylesheet" type="text/css" href="static/css/index.css">
+    {% block links %}
+
+    {% endblock %}
 </head>
 <body>
-	<h1> Stocks group </h1>
     <nav>
-    	<a href="{{url_for('index')}}"> Home </a>
-    	<a href="{{url_for('andrew')}}"> Andrew's Link </a>
-    	<a href="{{url_for('zach')}}"> Zach's Link </a>
-    	<a href="{{url_for('keith')}}"> keith's Link </a>
-    	<a href="{{url_for('john')}}"> john's Link </a>
+        <ul>
+        	<a href="{{url_for('index')}}"> Home </a>
+            <a href="{{url_for('trend_prediction')}}"> Trend Prediction </a>
+        	<a href="{{url_for('andrew')}}"> Andrew's Link </a>
+        	<a href="{{url_for('zach')}}"> Zach's Link </a>
+        	<a href="{{url_for('keith')}}"> keith's Link </a>
+        	<a href="{{url_for('john')}}"> john's Link </a>
+        </ul>
     </nav>
 
 {% block main %}
