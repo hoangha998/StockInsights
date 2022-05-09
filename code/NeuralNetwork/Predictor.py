@@ -25,11 +25,11 @@ class TrendPredictor():
         Load model structure from json file, and weights from h5 file
         Return TensorFlow model ready to be used
         '''
-        model_file = open('trained_model/model.json', 'r')
+        model_file = open('code/NeuralNetwork/trained_model/model.json', 'r')
         model_json = model_file.read()
         model_file.close()
         loaded_model = model_from_json(model_json)
-        loaded_model.load_weights("trained_model/weights.h5")
+        loaded_model.load_weights("code/NeuralNetwork/trained_model/weights.h5")
         return loaded_model
     
     
@@ -78,6 +78,8 @@ class TrendPredictor():
         print("\t - Decrease with: {:.2f}% confidence".format(pred[0]*100))
         print("\t - Stay the same with: {:.2f}% confidence".format(pred[2]*100))
         print("\t   (Note: stay the same means the change is < 0.1% of the last price)")
+        
+        return pred
         
         
     

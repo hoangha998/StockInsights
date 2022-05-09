@@ -1,16 +1,36 @@
 from flask import Flask, flash, request, redirect, url_for, jsonify, render_template, Response
-
+from code.NeuralNetwork.Predictor import TrendPredictor
 
 app = Flask(__name__)
 
+# initialize trend predictor 
+trend_predictor = TrendPredictor()
+
+
 @app.route("/")
 def index():
-	return render_template('index.html')
+	return render_template('README.html')
 
 
-@app.route("/test")
-def hello_world():
-    return "<p>Hello, World!</p>"
+@app.route("/trend_prediction", methods=['GET', 'POST'])
+def trend_prediction():
+	if request.method == 'POST':
+		ticker = request.form.get('ticker')
+		print("new ticker ({}) requested..".format(ticker))
+		trend_predictor.set_ticker(ticker)
+		decrease, increase, same = trend_predictor.predict()
+		increase = '{:.2f}'.format(increase*100)
+		decrease = '{:.2f}'.format(decrease*100)
+		same = '{:.2f}'.format(same*100)
+		result = {
+			'ticker': ticker,
+			'increase_confidence': increase,
+			'decrease_confidence': decrease,
+			'same_confidence': same
+		}
+		return render_template("trend_prediction.html", result = result) 
+	
+	return render_template("trend_prediction.html", result = False)
 
 @app.route("/Andrew")
 def andrew():
