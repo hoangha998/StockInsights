@@ -21,6 +21,10 @@ import copy
 import matplotlib.pyplot as plt
 import json
 
+#andrew and Zach's imports
+
+from group_code.SentimentAnalysis.TwitterScraper import *
+
 app = Flask(__name__)
 
 # initialize trend predictor
@@ -57,11 +61,44 @@ def trend_prediction():
 
     return render_template('trend_prediction.html', result=False)
 
+def adjustSentimentDataFrame(raw_df, company):
+    raw_df = raw_df[['date', 'sentiment', 'compound']]
+    
+    new_df = pd.DataFrame({
+        'Company': [],
+        'Date': [],
+        'Count Type': [],
+        'Count': [],
+        'Compound Average': []
+    })
+    dates = raw_df['date'].drop_duplicates().tolist()
+    
+    for date in dates:
+        temp = raw_df[raw_df['date']==date]
+        entry = {'Company': company, 'Date': date, 'Count Type': 'Positive', 'Count': temp['sentiment'].value_counts()['positive'], 'Compound Average': temp['compound'].mean()}
+        new_df = new_df.append(entry, ignore_index = True)
+        entry = {'Company': company, 'Date': date, 'Count Type': 'Negative', 'Count': temp['sentiment'].value_counts()['negative'], 'Compound Average': temp['compound'].mean()}
+        new_df= new_df.append(entry, ignore_index = True)
+
+    return new_df
 
 @app.route('/Andrew')
-def andrew():
-    variable = 100
-    return render_template('andrew.html', number=variable)
+def Andrew():
+    return render_template('andrew.html', graphJSON=compoundSentimentCallBackTest())
+
+@app.route('/compoundSentimentCallBackTest', methods=['POST', 'GET'])
+def cb():
+    return compoundSentimentCallBackTest(request.args.get('data'))
+
+def compoundSentimentCallBackTest(company = 'Tesla'):
+    sentiment_df = scrapeAndCleanse(company)
+    sentiment_df = adjustSentimentDataFrame(sentiment_df, company)
+    print(sentiment_df)
+    
+    sentimentTitle = "Overall Twitter Sentiment for {companyName} by Date".format(companyName = company)
+    fig = px.line(sentiment_df[sentiment_df['Company']==company], x='Date', y='Compound Average', title=sentimentTitle)
+    graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+    return graphJSON
 
 
 @app.route('/Zach')
