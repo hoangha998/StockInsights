@@ -1,6 +1,9 @@
 import pandas as pd
 import tweepy
 import os
+from dotenv import load_dotenv
+load_dotenv()
+
 
 CONSUMER_API_KEY = os.getenv('CONSUMER_API_KEY')
 CONSUMER_API_SECRET_KEY = os.getenv('CONSUMER_API_SECRET_KEY')
