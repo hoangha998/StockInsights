@@ -30,20 +30,22 @@ import plotly.express as px
 from dotenv import load_dotenv
 load_dotenv()
 
-
-
 def scrapeAndCleanse(nameOfStock):#Cleanse repeated tweets and retweets
     searchHashtagWord = '#'+nameOfStock
-    numTweetsToPull = 50
-    dateFrom = "2022-01-01"
+    numTweetsToPull = 250
+    dateFrom = "2021-01-01"
 
     #Scrape the tweets using the provided hashtag
     twitter_df= scrapeTweets.twitterScraper(searchHashtagWord, numTweetsToPull, dateFrom)
+    
     #Cleanse Tweets
     cleansedDataFrame = cleanseTweets.cleanse(twitter_df)
+    
     #Run Sentiment Analysis on the Tweets
     sentimentDataFrame = sentimentAnalyze.analyze(cleansedDataFrame) 
+    
     return sentimentDataFrame 
+    
 def adjustSentimentDataFrame(raw_df, company):
     raw_df = raw_df[['date', 'sentiment', 'compound']]
     
@@ -58,6 +60,7 @@ def adjustSentimentDataFrame(raw_df, company):
     
     for date in dates:
         temp = raw_df[raw_df['date']==date]
+        
         entry = {'Company': company, 'Date': date, 'Count Type': 'Positive', 'Count': temp['sentiment'].value_counts()['positive'], 'Compound Average': temp['compound'].mean()}
         new_df = new_df.append(entry, ignore_index = True)
         entry = {'Company': company, 'Date': date, 'Count Type': 'Negative', 'Count': temp['sentiment'].value_counts()['negative'], 'Compound Average': temp['compound'].mean()}
@@ -75,11 +78,9 @@ trend_predictor = None
 
 dash_app = get_dash_app(app)
 
-
 @app.route('/')
 def index():
     return render_template('README.html')
-
 
 @app.route('/trend_prediction', methods=['GET', 'POST'])
 def trend_prediction():
@@ -108,18 +109,28 @@ def andrew():
 
 @app.route('/positiveNegativeCallBackTest', methods=['POST', 'GET'])
 def cb1():
+    print("positive negative")
     return positiveNegativeCallBackTest(request.args.get('data'))
 
 def positiveNegativeCallBackTest(company = 'Tesla'):
-    sentiment_df = scrapeAndCleanse(company)
-    sentiment_df = adjustSentimentDataFrame(sentiment_df,company)
-    #print(sentiment_df)
+    if (company == "test"):
+        company = 'Game Stop'
+        sentiment_df = pd.read_csv('group_code/SentimentAnalysis/sentiment_df.csv')
+        sentiment_df = adjustSentimentDataFrame(sentiment_df, company)
+        
+        sentimentTitle = "Overall Twitter Sentiment for {companyName} by Date".format(companyName = company)
+        fig = px.bar(sentiment_df[sentiment_df['Company']==company], x='Date', y='Count', color='Count Type', barmode='group',  title=sentimentTitle)
+        graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+        return graphJSON
     
-    sentimentTitle = "Overall Twitter Sentiment for {companyName} by Date".format(companyName = company)
-    fig = px.bar(sentiment_df[sentiment_df['Company']==company], x='Date', y='Count', color='Count Type', barmode='group',  title=sentimentTitle)
-    graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
-    return graphJSON
-
+    else:
+        sentiment_df = scrapeAndCleanse(company)
+        sentiment_df = adjustSentimentDataFrame(sentiment_df,company)
+        
+        sentimentTitle = "Overall Twitter Sentiment for {companyName} by Date".format(companyName = company)
+        fig = px.bar(sentiment_df[sentiment_df['Company']==company], x='Date', y='Count', color='Count Type', barmode='group',  title=sentimentTitle)
+        graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+        return graphJSON
 
 @app.route('/Zach')
 def zach():
@@ -130,17 +141,23 @@ def cb():
     return compoundSentimentCallBackTest(request.args.get('data'))
 
 def compoundSentimentCallBackTest(company = 'Tesla'):
-    sentiment_df = scrapeAndCleanse(company)
-    sentiment_df = adjustSentimentDataFrame(sentiment_df, company)
-    print(sentiment_df)
-    compavg = sentiment_df.iloc[0]['Compound Average']
-    
-    sentimentTitle = "Overall Twitter Sentiment for {companyName} by Date. \n Today's compound average is {avg}".format(companyName = company, avg = compavg)
-    fig = px.line(sentiment_df[sentiment_df['Company']==company], x='Date', y='Compound Average', title=sentimentTitle)
-    graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
-    return graphJSON
-
-
+    if (company == "test"):
+        company = 'Game Stop'
+        sentiment_df = pd.read_csv('group_code/SentimentAnalysis/sentiment_df.csv')
+        sentiment_df = adjustSentimentDataFrame(sentiment_df, company)
+        sentimentTitle = "Overall Twitter Sentiment for {companyName} by Date.".format(companyName = company)
+        fig = px.line(sentiment_df[sentiment_df['Company']==company], x='Date', y='Compound Average', title=sentimentTitle)
+        graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+        return graphJSON
+        
+    else:
+        sentiment_df = scrapeAndCleanse(company)
+        sentiment_df = adjustSentimentDataFrame(sentiment_df, company)
+        compavg = sentiment_df.iloc[0]['Compound Average']
+        sentimentTitle = "Overall Twitter Sentiment for {companyName} by Date. \n Today's compound average is {avg}".format(companyName = company, avg = compavg)
+        fig = px.line(sentiment_df[sentiment_df['Company']==company], x='Date', y='Compound Average', title=sentimentTitle)
+        graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+        return graphJSON
 
 @app.route('/keith')
 def keith():
