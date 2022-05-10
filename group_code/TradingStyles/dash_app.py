@@ -7,7 +7,7 @@ import yfinance as yf
 import numpy as np
 
 stock = yf.Ticker('FB')
-
+# test data for starting 
 stock_data = stock.history(period="max")
 
 df = pd.DataFrame(stock_data)
@@ -22,7 +22,7 @@ def get_dash_app(app):
         server=app,
         url_base_pathname='/keith/'
     )
-
+    # setting up dash connection to server
     dash_app.layout = html.Div([
     html.H1('Stocks'),
     html.Div(
@@ -38,7 +38,7 @@ def get_dash_app(app):
         dcc.Textarea(
             id='textarea-state-example',
             value='',
-            style={'width': '10%', 'height': 25,  'align': 'center'},
+            style={'width': '10%', 'align': 'center'},
         ),
         html.Button('Submit', id='textarea-state-example-button', n_clicks=0, style={'height': 25}),
         html.Br(),
@@ -52,7 +52,9 @@ def get_dash_app(app):
         ]),], 
     style={'text-align':'center', 'display':'inline-block', 'width':'100%'}
     )
+    #layout structure for the app
     init_callback(dash_app)
+    #applies callbacks to the app and then returns the app so that it can be used else where 
     return dash_app
 def init_callback(dash_app):
     @dash_app.callback(
@@ -70,7 +72,7 @@ def init_callback(dash_app):
         df = pd.DataFrame(stock_data)
         fig = px.line(df, x=df.index, y='Close', template="simple_white", title=f'{inputs} stock data')
         return fig
-        #first chart predictions for display with possible modeling fit
+        #first chart for display with possible modeling fit
     @dash_app.callback(
     Output(component_id='major_cat', component_property='figure'),
     Input('textarea-state-example-button', 'n_clicks'),
@@ -78,7 +80,7 @@ def init_callback(dash_app):
 
     )
     def moving_average(n_clicks,inputs):
-
+        #larger moving average calculation for the charts that takes the ticker and the submit button as input
         if inputs == None or inputs == '' or n_clicks <= 0:
             inputs = 'FB'
 
@@ -97,6 +99,7 @@ def init_callback(dash_app):
 
     )
     def short_moving_average(n_clicks,inputs):
+        # by default if no ticker is entered or left blank then the chart uses Facebook 
         if inputs == None or inputs == '' or n_clicks <= 0:
             inputs = 'FB'
         stock = yf.Ticker(inputs)
