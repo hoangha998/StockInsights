@@ -62,7 +62,7 @@ def init_callback(dash_app):
     State('textarea-state-example', 'value')
 
     )
-    def customize_inputs(n_clicks,inputs):
+    def chart_one(n_clicks,inputs):
         if inputs == None or inputs == '' or n_clicks <= 0:
             inputs = 'FB'
         stock = yf.Ticker(inputs)
@@ -77,7 +77,7 @@ def init_callback(dash_app):
     State('textarea-state-example', 'value')
 
     )
-    def customize_inputs(n_clicks,inputs):
+    def moving_average(n_clicks,inputs):
 
         if inputs == None or inputs == '' or n_clicks <= 0:
             inputs = 'FB'
@@ -96,7 +96,7 @@ def init_callback(dash_app):
     State('textarea-state-example', 'value')
 
     )
-    def customize_stock(n_clicks,inputs):
+    def short_moving_average(n_clicks,inputs):
         if inputs == None or inputs == '' or n_clicks <= 0:
             inputs = 'FB'
         stock = yf.Ticker(inputs)
