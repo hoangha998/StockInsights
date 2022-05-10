@@ -71,11 +71,9 @@ def adjustSentimentDataFrame(raw_df, company):
 app = Flask(__name__)
 
 # initialize trend predictor
-# trend_predictor = TrendPredictor() DON'T DELETE
-trend_predictor = None
+trend_predictor = TrendPredictor() 
 
 # intialize dash app
-
 dash_app = get_dash_app(app)
 
 @app.route('/')
@@ -86,7 +84,6 @@ def index():
 def trend_prediction():
     if request.method == 'POST':
         ticker = request.form.get('ticker')
-        print('new ticker ({}) requested..'.format(ticker))
         trend_predictor.set_ticker(ticker)
         (decrease, increase, same) = trend_predictor.predict()
         increase = '{:.2f}'.format(increase * 100)
@@ -109,7 +106,6 @@ def andrew():
 
 @app.route('/positiveNegativeCallBackTest', methods=['POST', 'GET'])
 def cb1():
-    print("positive negative")
     return positiveNegativeCallBackTest(request.args.get('data'))
 
 def positiveNegativeCallBackTest(company = 'Tesla'):
@@ -161,18 +157,11 @@ def compoundSentimentCallBackTest(company = 'Tesla'):
 
 @app.route('/keith')
 def keith():
-    # from code import TradingStyles
     return dash_app.index()
-
-
-# use html template to show form with input for ticker, start date, and end date
 
 @app.route('/john', methods=['GET'])
 def john():
     return render_template('john.html')
-
-
-# post route to use yfinance to get data
 
 @app.route('/data', methods=['POST'])
 def getData():
@@ -188,9 +177,6 @@ def getData():
         theJSON = close_price.to_json(date_format='iso', orient='split')
         temp_json = json.loads(theJSON)
         temp_json.update(temp_dict)
-
-        # print(temp_json)
-        # return close_price.to_json(date_format="iso")
 
         return temp_json
 

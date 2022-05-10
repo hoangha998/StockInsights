@@ -1,154 +1,131 @@
-# Environment Setup
-***
-Follow these steps to get a working Python environment up and running that should prepare you for the programming assignments in this course. These are suggestions to get you started -- you may use your own environment setups if you are more familiar with them (i.e. Anaconda distribution, pure-Windows setups, etc.). If you are confident using your own environment, you may skip to [Clone This Repository](#clone-this-repository) to test out our workflow. 
+# Project overview
+This project aims to provide stock traders meaningful insights which they can consult before making any trading decisions. The project consists of four main components:
+* Predicting stock trend with Recurrent Neural Network (Hoang)
+* Stock Sentimental Analysis (Zach & Andrew)
+* Summary Statistics & Performance Indicator (John)
+* Stock visualization and Price Prediction (Keith)
 
-If following this tutorial causes errors at any step of the process, please [open an issue](https://github.com/wustl-data/environment-setup/issues/new) -- it is likely other students are experiencing the same problem as well. Obviously, you may skip any steps for which you already have the software installed.
+All of the components above can be tested via our central Flask application. Details are below.
 
-## Windows Users Only - WSL installation
-Windows users are encouraged to use Windows Subsystem for Linux (WSL), which allows us to use a fully-operational (but GUI-less) Ubuntu operating system within Windows. In addition to the added stability of using Ubuntu over Windows, we get to use a Unix-style command-line interface (`bash` by default) which matches the interface commonly found in various software tutorials and installation instructions.
+# Getting started
 
-From PowerShell:
-```shell
-$ wsl --install
-```
-> Note: shell commands are usually denoted with a $ sign for clarity. Do not copy the $ if you copy and paste commands from any documentation.
+## Installing dependencies
+To get started, simply activate your favorite virtual environment, navigate to this project root folder, and run:
+    `pip install -r requirements.txt`
+    Note that the installation process may take a while since we have some fairly heavy packages such as TensorFlow.
+## Run the flask app
+In the same folder, open a terminal and run:
+    `python flask_app.py`
+Our flask application can then be accessed at http://localhost:5000/. From here you can navigate to different components of the project via the links in the navigation bar. 
 
-Restart your machine if prompted. Ubuntu should now be available in your Windows Apps, if not, download it from the Microsoft Store. Open Ubuntu and enter some basic credentials (your password does not need to be secure without good reason).
+# Details of each component
 
-From your (Ubuntu) bash shell, run the following to upgrade Ubuntu's installed packages:
-```bash
-$ sudo apt update && sudo apt upgrade
-```
+## 1. Stock trend prediction with RNN
 
-## All Users - Pyenv and Python 3.9.6 installation
-1. Install the [Python build dependencies](https://github.com/pyenv/pyenv/wiki#suggested-build-environment) for your OS.
-2. Try running the automatic Pyenv installer using the command:
-```bash
-$ curl https://pyenv.run | bash
-```
-> WSL users may see a warning about adding `pyenv` to the load path.  If you see this warning, run:
-> ```bash
-> $ echo 'eval "$(pyenv init -)"' >> ~/.bashrc
-> ```
-> which adds a pyenv initialization command to your `.bashrc` file.
+### Making a prediction
+Included in this project is a pretrained RNN model which analyzes the last 6 trading-hour price data (*Open, Close, High, Low, Volume*) and predicts whether the average price of that stock will increase, decrease, or stay (approximately) the same with confidence percentages. 
+To make a prediction, simply navigate to "Trend Prediction" tab in our Flask app, enter a ticker (e.g. TSLA, FB), and hit submit. 
 
-If the automatic installer fails, try the [manual installation process](https://github.com/pyenv/pyenv#installation) using the directions for your OS (WSL users, use the "GitHub Checkout" instructions for Ubuntu).
-
-Install Python version 3.9.6 -- this is the latest version available on Pyenv as of the creation of this document and will be the Python version we use throughout this course.
-```bash
-$ pyenv install 3.9.6
-```
-You may set the global Python version as 3.9.6 or establish this version individually for each project/assignment. See `pyenv --help` for some hints on how to do this, if it hasn't been done for you already.
-
-## Poetry
-Now, install [poetry](https://python-poetry.org/docs/master/#installation):
-```bash
-$ curl -sSL https://install.python-poetry.org | python -
-```
-Poetry will manage both your dependencies and your virtual environments. If you don't know what this means, please [open an issue](https://github.com/wustl-data/environment-setup/issues/new) for discussion.
-
-> A note on virtualenv management: You may be familiar with a package/virtualenv manager called Pipenv (or even just pip and venv individually). While using Pipenv is perfectly reasonable, many people in the Python universe are moving to Poetry, especially for its use of a `pyproject.toml` configuration file, which is quickly becoming a [Python standard](https://www.python.org/dev/peps/pep-0621/). Pipenv (and pip in general) are a little more common, so most package installations will ask you to run `pip install <packagename>`. Poetry's corresponding command is `poetry add <packagename>` and will work as a substitute for `pip install` in 99% of instances.
-
-## Configure your GitHub credentials.
-Especially if you have not done this before from your command line, you will likely need to establish your git credentials to communicate with GitHub. Follow the instructions [here](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/about-authentication-to-github#authenticating-with-the-command-line) to authenticate your command line. I won't go into further detail here to save time and space, but these steps are historically a little bit finicky, so please [open an issue](https://github.com/wustl-data/environment-setup/issues/new) if you have any roadblocks.
+![](https://i.imgur.com/dA6ziW6.png)
 
 
-## Clone this Repository
-<img width="164" alt="image" src="https://user-images.githubusercontent.com/21191435/150481693-a285d281-b340-4b5b-89b9-ad956cb8d73b.png">
 
-> A quick note about `bash` syntax: your "home" folder is designated by a `~`; your shell prompt usually indicates your _current directory_ (`cd`) relative to this home folder. To list the files in your current directory, type `ls` or `ls -a` (the `-a` flag shows hidden files designated with a `.` at the beginning of their filename. For example, `~/.bashrc` (Linux) or `~/.bash_profile` (Mac) are hidden files that contain code which executes each time you open your shell).
+---
+### Train a new model
+**1. Download and format data**
+Navigate to `FinalProject/code/NeuralNetwork` and open  `get_data.py` in a text editor. From here you can find a set of variables which you can edit to suit your needs:
+* **EVAL_RANGE:** range of time units in the past to consider (default: 24)
+* **PREDICT_RANGE:** range of time units the future to generate labels (default: 4)
+* **START_DATE:** Data will start from this date
+* **END_DATE** = Data will be up to this date
+* **RAW_INTERVAL:** Interval to retrieve data from YFinance. For example, "15m", "1h", "1d". (default: "15m")
+* **NO_CHANGE_THRESHOLD:** percentage of last price for a "stay the same" target to be created (default: 0.1%)
+* **TRAIN_RATIO:** Formatted data will be split into train and test set right away to ensure equal proporiton of each stock's data to the train set and test set. (default: 0.9)
 
-From your home directory or a directory of your choosing (`~/code/` is a common choice), make a directory for this class:
-`mkdir cse314 && cd cse314`
-or
-`mkdir dcds510 && cd dcds510`
-or whatever you would like.
+**Note:** Data will be download for the *100 tickers* in the *Electronic Technology* section listed in `FinalProject/group_code/NeuralNetwork/tickers.csv`. You can also change this file if you see fits. 
 
-> The `&&` simply executes the next command after the first one successfully completes. In this case, you are simply changing your current directory to the folder you just created.
+After changing those variables, simply run `get_data.py`, the train and test data can then be found under `FinalProject/group_code/NeuralNetwork/data` in `.npy` format. 
 
-Now clone this repository, which will copy the files contained herein to a new folder on your machine. Go to the top of this page and copy the repository URL, which you can find by clicking the big green "Code" button. Be sure to use the correct URL (HTTP or SSH) depending on how you set up your credentials. Now perform the clone:
+**2. Train the RNN using newly obtained data**
+Navigate to `FinalProject/group_code/NeuralNetwork` and run `model_training.py`. The trained RNN structure and weights can then be found under `FinalProject/group_code/NeuralNetwork/trained_model` in `.json` and `.h5` formats.
 
-```bash
-$ git clone <your-repo-url>
-```
+**Note:** You don't need to manually load and use these files. 
+The file `Predictor.py` contains the `TrendPredictor` class which automatically loads the RNN in `/trained_model` upon initialization, and you can use this class to make predictions right away with the following 2 functions of the class:
+* **set_ticker(ticker):** The input `ticker` is the ticker for which you want to make a prediction.  
+* **predict()**: Returns the predictions as shown in the screnshot above. 
+Note that you need to change the EVAL_RANGE and PREDICT_RANGE variables in this class's constructor match the trained RNN model. ![](https://i.imgur.com/026iPeY.png)
 
-Now `cd` into your new folder:
-```bash
-$ cd <your-repo-name>
-```
 
-## VS Code IDE
-VS Code is a state-of-the-art IDE that works cross-platform (including with WSL) and provides many nice features and extensions, including an integration with GitHub Classroom (we will have to find out how that works together). Feel free to use your IDE of choice, but this one is a good, stable choice. [Install it](https://code.visualstudio.com/) if you haven't already.
+Details about the class and the functions it offers can be found by opening `Predictor.py` in a text editor and read the comments. 
 
-You may open VS Code from your bash shell by entering `code .` (the dot instructs VS Code to open in the _current directory_). You should now have a VS Code window opened to your assignment directory.
 
-If there isn't one open already, open a terminal window within VS Code using the menu at the top or the shortcut Ctrl+Shift+` (that's a backtick).
 
-## Install the project dependencies
-The code in the git repository that you cloned includes some package dependencies, so we will install them:
-```bash
-$ poetry install
-```
-Now, we will let Poetry create a virtual environment for us (which isolates our package dependencies from the rest of our system) and activate it for our shell:
-```bash
-$ poetry shell
-```
-You should now see your activated virtualenv on your command line next to your shell prompt. You are now ready to Python!!!
+---
 
-## Create a Python script
-Using your IDE (or a bash command if you're feeling adventurous), create a file called `hw0.py`.
 
-## Commit your changes
-You made a successful change to your repository, so it's time to commit your changes. As we progress, you may skip some of these smaller meaningless commits between steps, but it's better to make too many commits now and get in the habit of performing them often.
+## 2. Sentiment Analysis
+We scraped tweets using a company's hashtag and we used sentiment analysis to gauge Twitter users' sentiment about different comapnies
 
-1. Check on your git status:
-  ```bash
-  $ git status
-  ```
-  You will notice that `hw0.py` is not being tracked. Let's fix that.
-  
-2. Add your new file to "staging":
-  ```bash
-  $ git add hw0.py
-  ```
-  
-3. Check your git status again to make sure that your file was added to staging. It should be a nice green color. In general, "staging" should be reserved for files that are ready to commit, but you want to wait until you finish coding up some other files before committing them all together. Since this is the only file we are changing, let's commit.
-4. Run:
-  ```bash
-  $ git commit -m "add hw0.py"
-  ```
-  The `-m` flag stands for "message" and is required on all git commits -- simply type a sentence that describes what the commit does.  Someone reviewing your code should easily be able to review all of the steps you took via your commit history through these messages.
-  
- Great job, almost done!
- 
- ## Write some Python
- The dependencies you installed with Poetry included a neat package that generates fake data called `Faker`. Let's use this code to make a `.csv` file full of fake information.
- 
- 1. Open `hw0.py`
- 2. Skim the [Faker documentation](https://faker.readthedocs.io/en/master/) and write a script that generates 1000 unique first names. Seed the data with your student ID. 
- 3. Commit your code.
- 4. Now, add some code that creates a file named `fake_data.csv`. This CSV file should contain a column for fake first names, last names, addresses, and phone numbers. I suggest using Python's built-in `csv` module or installing Pandas and using the `.to_csv` function. The `csv` route would be quicker, easier and more "Pythonic." On the other hand, now is as good of a time as any to start getting acquainted with Pandas if you are not already familiar.  Commit your code again -- I expect at least two commits out of this step.
- 5. As a reminder, it's good practice to keep your data out of version control. I will be checking your scripts, not your data files! Add `fake_data.csv` to a file named `.gitignore`.
+The data displayed in both deliverables can be changed through a textbox that allows you to type any company in. After a company is inputted, callback methods for the app trigger, calling `scrapeAndCleanse` and `adjustSentimentDataFrame`. 
 
-## Submit your code for grading
-Your code is ready for grading!
-Push to the repository you cloned this from:
-```bash
-$ git push
-```
-Behind the scenes, this runs `git push origin main` by default-- `origin` specifies which _remote_ repository you would like to push to, while `main` specifies which branch you would like to push.
+`scrapeAndCleanse` uses the Tweepy API to scrape Twitter with the company as a hashtag, and outputs a sample of recent tweets with that company into a dataframe. Most of this is done directly using Tweepy's documentation. Then the data is cleansed by eliminating any retweets and faulty symbols (see comments in `group_code/SentimentAnalysis/cleanseTweets.py` for full details on what gets cleansed), and analyzed using the VADER Sentiment Analysis model from the Natural Language Toolkit (NLTK) (see comments in `group_code/SentimentAnalysis/sentimentAnalyze.py` to see what the Analyzer outputs for us). Each tweet that goes through this analysis outputs a date, a label of "positive", "negative", or "neutral", and a compound, which is a score that shows how positive or negative a tweet is: positive tweets are > 0, negative tweets are < 0, and the greater the absolute value the more extreme.
 
-Please submit your assignment to Gradescope using the link found on Canvas -- it looks like a few of you have already added the course on Gradescope so hopefully there are no issues finding the link. You may submit as many times as you would like up to the due date.
+In `adjustSentimentDataFrame`, we arrange these tweets by their date and count the number of positive and negative tweets per day, as well as the compound average of these tweets. Both deliverables use this final dataframe we make
 
-To simplify things a little for hw0, the checks only make sure that you
+**Note:** To test data over multiple days enter "test" and hit the Submit button. This will pull up a pre-scraped dataframe to show data over many days.
 
-- have a script called "hw0.py" that creates a file called "fake_data.csv" when ran as a script.
-- the CSV (generated from step 1) contains 1000 rows of data
-- the CSV has four columns
+**1. Positive/Negative Bar Chart**
+Displays a pair of bars that show the number of positive and negative tweets counted. If the API pulled tweets from multiple days, this graph will display tweets from each day separately. The default company scraped when you first click the tab is Tesla.
 
-These are all checked in one test that awards 10 fake points.
+![](https://imgur.com/joVikUh.png)
 
-Future assignments will have more stringent checks but this will do for now.
+**2. Compound Average Line Graph**
+Displays a line graph that shows the change in average of compound the number of positive and negative tweets counted. Unfortunatly, most times the API pulls tweets from a company, they all occur on the same day, but panning your cursor over the center of the line graph displays the correct number. For convenience, we have also displayed the current day's number on the html page as well. Here's an example of the compound average over multiple days though. 
 
-Please email me if you think the Autograder is incorrectly grading your submissions.
-Congrats on finishing Homework 0!!! You've got the boring (but difficult) stuff out of the way!!!
+![](https://imgur.com/zfuzrnJ.png)
+
+The default company scraped when you first click the tab is Tesla.
+
+Some unfortunate drawbacks to calling Tweepy with every change of the textbox in our deliverables are 
+1. Tweepy takes time to scrape, so results are not immediate, and sometimes the plots take awhile to load.   
+2. Like we mention in previous paragraphs, sometimes Tweepy doesn't pull tweets from multiple days, so it's hard to gauge how a company does over time. 
+3. Tweepy only allows so many calls to the API, so after a lot of requests the API may time out and cause a "too many requests" error. Although having pre-stored data for this project was feasible, it would take up a lot of memory and take freedom away from the user to search up any company or hashtag they wanted. We've also hindered this drawback to a minimum by finding a good number for the sample size of tweets pulled so that it still displays a good enough reflection of the sentiment of the company but not so large as to cause quick timeouts.
+
+## 3. Stock visualization and Price Prediction
+
+For the quantitative analysis portion, we performed  quantitative analysis on various stock close prices by looking at the moving averages and comparing the days. part, we decided to showcase the deliverables: charts with different moving averages plotted
+
+The data displayed in both deliverables can be changed through typing the company's ticker into the search box. After a company is inputted, callback methods for the app trigger, calling `init_callbacks` and `moving_average functions`. 
+
+The `moving_average functions` uses the Yahoo Finance Api to get historical stock data and plots that along side the moving average from the long term mean and the short term mean of the closing price by building dataframes and using ploty to plot the numbers. The default stock entered is Facebook which a popular indicator and usually have huge directional pull on the stock market because of it's size and popularitry 
+
+The basis of the moving average trading style is very simple. If the short moving average exceeds the long moving average then you go long, if the long moving average exceeds the short moving average then you exit.
+
+
+Some unfortunate drawbacks to calling Yahoo Finance Api and using methods are 
+1. Stock prediction is extrememly diffcult and near impossible
+2. There is a decent amount of time in getting the information because it is pulling a amount of data beyond the closing price like industry and sector of the stock 
+3. The model works on historical data so there is a large margin of error for new stocks that have just hit the market like Robinhood, HOOD, and Coinbase, COIN as examples 
+
+
+
+## 4. Summary Statistics & Performance Indicator
+In the Performance Indicators section of this project, we gathered summary statistics on the adjusted close price of a user inputed stock so the potential investor is able to make informed decisions as to the movement of the stock. The best way to display this data was a line plot showing price data over a period of time and an output of statistical data. 
+
+The deliverables of the project show a line chart displaying time series data of the stock's price and an output of the statistics for the stock. The user is able to enter stock ticker in the search box and the graph and statistics will update by making a call to yfinance, which is how the data is downloaded. 
+
+![](https://i.imgur.com/qD5JXTj.png)
+
+
+In the method `getData()`, an empty data frame is initialized. Once the user inputs a stock ticker, a start date and an end date, the data frame is updated with the downloaded information for yfinance. We then compute the summary statistics, and then convert both to a json to be transfer the data to be updated in the graph. 
+
+From there, axious.post is used to grab the data and plot it into a chart. The X-Axis labels are the dates and the Y-Axis labels are the stock prices. The stock statistics are appended below in their own div container. 
+
+![](https://i.imgur.com/Gui7Eoa.png)
+![](https://i.imgur.com/oPyXZrL.png)
+
+
+Some drawbacks to using yfinance to grab the stock data include: 
+
+1. Stock performance and statistics only account for historical data and do not give 100% accurate indication as to what the future of the stock might look like
+2. Extracting the correct data can be difficult 

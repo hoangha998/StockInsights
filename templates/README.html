@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% block main %}
+
 <!DOCTYPE html>
 
 <html lang="en">
@@ -37,16 +38,15 @@
 </head>
 
 <body>
-
-    <div class="markdown-body container-fluid comment-enabled comment-inner group-header">
+	<div class="markdown-body container-fluid comment-enabled comment-inner group-header">
         <h1> Stocks Trading Insights Group </h1>
     </div>
 
-    <div id="doc" class="markdown-body container-fluid comment-enabled comment-inner" data-hard-breaks="true"><h1 id="Project-overview" data-id="Project-overview"><a class="anchor hidden-xs" href="#Project-overview" title="Project-overview"><span class="octicon octicon-link"></span></a><span>Project overview</span></h1><p><span>This project aims to provide stock traders meaningful insights which they can consult before making any trading decisions. The project consists of four main components:</span></p><ul>
+    <div id="doc" class="markdown-body container-fluid comment-enabled" data-hard-breaks="true"><h1 id="Project-overview" data-id="Project-overview"><a class="anchor hidden-xs" href="#Project-overview" title="Project-overview"><span class="octicon octicon-link"></span></a><span>Project overview</span></h1><p><span>This project aims to provide stock traders meaningful insights which they can consult before making any trading decisions. The project consists of four main components:</span></p><ul>
 <li><span>Predicting stock trend with Recurrent Neural Network (Hoang)</span></li>
-<li><span>Stock Sentimental Analysis (Zach &amp; Andrew - EDIT)</span></li>
-<li><span>KPI (John - EDIT)</span></li>
-<li><span>Stock visualization and price prediction (Keith - EDIT)</span></li>
+<li><span>Stock Sentimental Analysis (Zach &amp; Andrew)</span></li>
+<li><span>Summary Statistics &amp; Performance Indicator (John)</span></li>
+<li><span>Stock visualization and Price Prediction (Keith)</span></li>
 </ul><p><span>All of the components above can be tested via our central Flask application. Details are below.</span></p><h1 id="Getting-started" data-id="Getting-started"><a class="anchor hidden-xs" href="#Getting-started" title="Getting-started"><span class="octicon octicon-link"></span></a><span>Getting started</span></h1><h2 id="Installing-dependencies" data-id="Installing-dependencies"><a class="anchor hidden-xs" href="#Installing-dependencies" title="Installing-dependencies"><span class="octicon octicon-link"></span></a><span>Installing dependencies</span></h2><p><span>To get started, simply activate your favorite virtual environment, navigate to this project root folder, and run:</span><br>
 <code>pip install -r requirements.txt</code><br>
 <span>Note that the installation process may take a while since we have some fairly heavy packages such as TensorFlow.</span></p><h2 id="Run-the-flask-app" data-id="Run-the-flask-app"><a class="anchor hidden-xs" href="#Run-the-flask-app" title="Run-the-flask-app"><span class="octicon octicon-link"></span></a><span>Run the flask app</span></h2><p><span>In the same folder, open a terminal and run:</span><br>
@@ -61,13 +61,27 @@
 <li><strong><span>RAW_INTERVAL:</span></strong><span> Interval to retrieve data from YFinance. For example, “15m”, “1h”, “1d”. (default: “15m”)</span></li>
 <li><strong><span>NO_CHANGE_THRESHOLD:</span></strong><span> percentage of last price for a “stay the same” target to be created (default: 0.1%)</span></li>
 <li><strong><span>TRAIN_RATIO:</span></strong><span> Formatted data will be split into train and test set right away to ensure equal proporiton of each stock’s data to the train set and test set. (default: 0.9)</span></li>
-</ul><p><strong><span>Note:</span></strong><span> Data will be download for the </span><em><span>100 tickers</span></em><span> in the </span><em><span>Electronic Technology</span></em><span> section listed in </span><code>FinalProject/code/NeuralNetwork/tickers.csv</code><span>. You can also change this file if you see fits.</span></p><p><span>After changing those variables, simply run </span><code>get_data.py</code><span>, the train and test data can then be found under </span><code>FinalProject/code/NeuralNetwork/data</code><span> in </span><code>.npy</code><span> format.</span></p><p><strong><span>2. Train the RNN using newly obtained data</span></strong><br>
-<span>Navigate to </span><code>FinalProject/code/NeuralNetwork</code><span> and run </span><code>model_training.py</code><span>. The trained RNN structure and weights can then be found under </span><code>FinalProject/code/NeuralNetwork/trained_model</code><span> in </span><code>.json</code><span> and </span><code>.h5</code><span> formats.</span></p><p><strong><span>Note:</span></strong><span> You don’t need to manually load and use these files.</span><br>
+</ul><p><strong><span>Note:</span></strong><span> Data will be download for the </span><em><span>100 tickers</span></em><span> in the </span><em><span>Electronic Technology</span></em><span> section listed in </span><code>FinalProject/group_code/NeuralNetwork/tickers.csv</code><span>. You can also change this file if you see fits.</span></p><p><span>After changing those variables, simply run </span><code>get_data.py</code><span>, the train and test data can then be found under </span><code>FinalProject/group_code/NeuralNetwork/data</code><span> in </span><code>.npy</code><span> format.</span></p><p><strong><span>2. Train the RNN using newly obtained data</span></strong><br>
+<span>Navigate to </span><code>FinalProject/group_code/NeuralNetwork</code><span> and run </span><code>model_training.py</code><span>. The trained RNN structure and weights can then be found under </span><code>FinalProject/group_code/NeuralNetwork/trained_model</code><span> in </span><code>.json</code><span> and </span><code>.h5</code><span> formats.</span></p><p><strong><span>Note:</span></strong><span> You don’t need to manually load and use these files.</span><br>
 <span>The file </span><code>Predictor.py</code><span> contains the </span><code>TrendPredictor</code><span> class which automatically loads the RNN in </span><code>/trained_model</code><span> upon initialization, and you can use this class to make predictions right away with the following 2 functions of the class:</span></p><ul>
 <li><strong><span>set_ticker(ticker):</span></strong><span> The input </span><code>ticker</code><span> is the ticker for which you want to make a prediction.</span></li>
 <li><strong><span>predict()</span></strong><span>: Returns the predictions as shown in the screnshot above.</span><br>
 <span>Note that you need to change the EVAL_RANGE and PREDICT_RANGE variables in this class’s constructor match the trained RNN model. </span><img src="https://i.imgur.com/026iPeY.png" alt="" loading="lazy"></li>
-</ul><p><span>Details about the class and the functions it offers can be found by opening </span><code>Predictor.py</code><span> in a text editor and read the comments.</span></p><hr><h2 id="2-Sentimental-Analysis" data-id="2-Sentimental-Analysis"><a class="anchor hidden-xs" href="#2-Sentimental-Analysis" title="2-Sentimental-Analysis"><span class="octicon octicon-link"></span></a><span>2. Sentimental Analysis</span></h2><h2 id="3-Keith" data-id="3-Keith"><a class="anchor hidden-xs" href="#3-Keith" title="3-Keith"><span class="octicon octicon-link"></span></a><span>3. Keith</span></h2><h2 id="4-John" data-id="4-John"><a class="anchor hidden-xs" href="#4-John" title="4-John"><span class="octicon octicon-link"></span></a><span>4. John</span></h2></div>
+</ul><p><span>Details about the class and the functions it offers can be found by opening </span><code>Predictor.py</code><span> in a text editor and read the comments.</span></p><hr><h2 id="2-Sentiment-Analysis" data-id="2-Sentiment-Analysis"><a class="anchor hidden-xs" href="#2-Sentiment-Analysis" title="2-Sentiment-Analysis"><span class="octicon octicon-link"></span></a><span>2. Sentiment Analysis</span></h2><p><span>We scraped tweets using a company’s hashtag and we used sentiment analysis to gauge Twitter users’ sentiment about different comapnies</span></p><p><span>The data displayed in both deliverables can be changed through a textbox that allows you to type any company in. After a company is inputted, callback methods for the app trigger, calling </span><code>scrapeAndCleanse</code><span> and </span><code>adjustSentimentDataFrame</code><span>.</span></p><p><code>scrapeAndCleanse</code><span> uses the Tweepy API to scrape Twitter with the company as a hashtag, and outputs a sample of recent tweets with that company into a dataframe. Most of this is done directly using Tweepy’s documentation. Then the data is cleansed by eliminating any retweets and faulty symbols (see comments in </span><code>group_code/SentimentAnalysis/cleanseTweets.py</code><span> for full details on what gets cleansed), and analyzed using the VADER Sentiment Analysis model from the Natural Language Toolkit (NLTK) (see comments in </span><code>group_code/SentimentAnalysis/sentimentAnalyze.py</code><span> to see what the Analyzer outputs for us). Each tweet that goes through this analysis outputs a date, a label of “positive”, “negative”, or “neutral”, and a compound, which is a score that shows how positive or negative a tweet is: positive tweets are &gt; 0, negative tweets are &lt; 0, and the greater the absolute value the more extreme.</span></p><p><span>In </span><code>adjustSentimentDataFrame</code><span>, we arrange these tweets by their date and count the number of positive and negative tweets per day, as well as the compound average of these tweets. Both deliverables use this final dataframe we make</span></p><p><strong><span>Note:</span></strong><span> To test data over multiple days enter “test” and hit the Submit button. This will pull up a pre-scraped dataframe to show data over many days.</span></p><p><strong><span>1. Positive/Negative Bar Chart</span></strong><br>
+<span>Displays a pair of bars that show the number of positive and negative tweets counted. If the API pulled tweets from multiple days, this graph will display tweets from each day separately. The default company scraped when you first click the tab is Tesla.</span></p><p><img src="https://imgur.com/joVikUh.png" alt="" loading="lazy"></p><p><strong><span>2. Compound Average Line Graph</span></strong><br>
+<span>Displays a line graph that shows the change in average of compound the number of positive and negative tweets counted. Unfortunatly, most times the API pulls tweets from a company, they all occur on the same day, but panning your cursor over the center of the line graph displays the correct number. For convenience, we have also displayed the current day’s number on the html page as well. Here’s an example of the compound average over multiple days though.</span></p><p><img src="https://imgur.com/zfuzrnJ.png" alt="" loading="lazy"></p><p><span>The default company scraped when you first click the tab is Tesla.</span></p><p><span>Some unfortunate drawbacks to calling Tweepy with every change of the textbox in our deliverables are</span></p><ol>
+<li><span>Tweepy takes time to scrape, so results are not immediate, and sometimes the plots take awhile to load.</span></li>
+<li><span>Like we mention in previous paragraphs, sometimes Tweepy doesn’t pull tweets from multiple days, so it’s hard to gauge how a company does over time.</span></li>
+<li><span>Tweepy only allows so many calls to the API, so after a lot of requests the API may time out and cause a “too many requests” error. Although having pre-stored data for this project was feasible, it would take up a lot of memory and take freedom away from the user to search up any company or hashtag they wanted. We’ve also hindered this drawback to a minimum by finding a good number for the sample size of tweets pulled so that it still displays a good enough reflection of the sentiment of the company but not so large as to cause quick timeouts.</span></li>
+</ol><h2 id="3-Stock-visualization-and-Price-Prediction" data-id="3-Stock-visualization-and-Price-Prediction"><a class="anchor hidden-xs" href="#3-Stock-visualization-and-Price-Prediction" title="3-Stock-visualization-and-Price-Prediction"><span class="octicon octicon-link"></span></a><span>3. Stock visualization and Price Prediction</span></h2><p><span>For the quantitative analysis portion, we performed  quantitative analysis on various stock close prices by looking at the moving averages and comparing the days. part, we decided to showcase the deliverables: charts with different moving averages plotted</span></p><p><span>The data displayed in both deliverables can be changed through typing the company’s ticker into the search box. After a company is inputted, callback methods for the app trigger, calling </span><code>init_callbacks</code><span> and </span><code>moving_average functions</code><span>.</span></p><p><span>The </span><code>moving_average functions</code><span> uses the Yahoo Finance Api to get historical stock data and plots that along side the moving average from the long term mean and the short term mean of the closing price by building dataframes and using ploty to plot the numbers. The default stock entered is Facebook which a popular indicator and usually have huge directional pull on the stock market because of it’s size and popularitry</span></p><p><span>The basis of the moving average trading style is very simple. If the short moving average exceeds the long moving average then you go long, if the long moving average exceeds the short moving average then you exit.</span></p><p><span>Some unfortunate drawbacks to calling Yahoo Finance Api and using methods are</span></p><ol>
+<li><span>Stock prediction is extrememly diffcult and near impossible</span></li>
+<li><span>There is a decent amount of time in getting the information because it is pulling a amount of data beyond the closing price like industry and sector of the stock</span></li>
+<li><span>The model works on historical data so there is a large margin of error for new stocks that have just hit the market like Robinhood, HOOD, and Coinbase, COIN as examples</span></li>
+</ol><h2 id="4-Summary-Statistics-amp-Performance-Indicator" data-id="4-Summary-Statistics-amp-Performance-Indicator"><a class="anchor hidden-xs" href="#4-Summary-Statistics-amp-Performance-Indicator" title="4-Summary-Statistics-amp-Performance-Indicator"><span class="octicon octicon-link"></span></a><span>4. Summary Statistics &amp; Performance Indicator</span></h2><p><span>In the Performance Indicators section of this project, we gathered summary statistics on the adjusted close price of a user inputed stock so the potential investor is able to make informed decisions as to the movement of the stock. The best way to display this data was a line plot showing price data over a period of time and an output of statistical data.</span></p><p><span>The deliverables of the project show a line chart displaying time series data of the stock’s price and an output of the statistics for the stock. The user is able to enter stock ticker in the search box and the graph and statistics will update by making a call to yfinance, which is how the data is downloaded.</span></p><p><img src="https://i.imgur.com/qD5JXTj.png" alt="" loading="lazy"></p><p><span>In the method </span><code>getData()</code><span>, an empty data frame is initialized. Once the user inputs a stock ticker, a start date and an end date, the data frame is updated with the downloaded information for yfinance. We then compute the summary statistics, and then convert both to a json to be transfer the data to be updated in the graph.</span></p><p><span>From there, axious.post is used to grab the data and plot it into a chart. The X-Axis labels are the dates and the Y-Axis labels are the stock prices. The stock statistics are appended below in their own div container.</span></p><p><img src="https://i.imgur.com/Gui7Eoa.png" alt="" loading="lazy"><br>
+<img src="https://i.imgur.com/oPyXZrL.png" alt="" loading="lazy"></p><p><span>Some drawbacks to using yfinance to grab the stock data include:</span></p><ol>
+<li><span>Stock performance and statistics only account for historical data and do not give 100% accurate indication as to what the future of the stock might look like</span></li>
+<li><span>Extracting the correct data can be difficult</span></li>
+</ol></div>
     <div class="ui-toc dropup unselectable hidden-print" style="display:none;">
         <div class="pull-right dropdown">
             <a id="tocLabel" class="ui-toc-label btn btn-default" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" title="Table of content">
@@ -75,30 +89,21 @@
             </a>
             <ul id="ui-toc" class="ui-toc-dropdown dropdown-menu" aria-labelledby="tocLabel">
                 <div class="toc"><ul class="nav">
-<li class=""><a href="#Project-overview" title="Project overview">Project overview</a></li>
-<li class=""><a href="#Getting-started" title="Getting started">Getting started</a><ul class="nav">
-<li class=""><a href="#Installing-dependencies" title="Installing dependencies">Installing dependencies</a></li>
-<li class=""><a href="#Run-the-flask-app" title="Run the flask app">Run the flask app</a></li>
+<li><a href="#Project-overview" title="Project overview">Project overview</a></li>
+<li><a href="#Getting-started" title="Getting started">Getting started</a><ul class="nav">
+<li><a href="#Installing-dependencies" title="Installing dependencies">Installing dependencies</a></li>
+<li><a href="#Run-the-flask-app" title="Run the flask app">Run the flask app</a></li>
 </ul>
 </li>
-<li class=""><a href="#Details-of-each-component" title="Details of each component">Details of each component</a><ul class="nav">
-
-
-<li class=""><a href="#1-Stock-trend-prediction-with-RNN" title="1. Stock trend prediction with RNN">1. Stock trend prediction with RNN</a><ul class="nav">
-<li class=""><a href="#Making-a-prediction" title="Making a prediction">Making a prediction</a></li>
-<li class=""><a href="#Train-a-new-model" title="Train a new model">Train a new model</a></li>
+<li><a href="#Details-of-each-component" title="Details of each component">Details of each component</a><ul class="nav">
+<li><a href="#1-Stock-trend-prediction-with-RNN" title="1. Stock trend prediction with RNN">1. Stock trend prediction with RNN</a><ul class="nav">
+<li><a href="#Making-a-prediction" title="Making a prediction">Making a prediction</a></li>
+<li><a href="#Train-a-new-model" title="Train a new model">Train a new model</a></li>
 </ul>
 </li>
-
-<li><a href="#2-Sentimental-Analysis" title="2. Sentimental Analysis">2. Sentimental Analysis</a></li>
-
-
-
-
-
-
-<li><a href="#3-Keith" title="3. Keith">3. Keith</a></li>
-<li class=""><a href="#4-John" title="4. John">4. John</a></li>
+<li><a href="#2-Sentiment-Analysis" title="2. Sentiment Analysis">2. Sentiment Analysis</a></li>
+<li><a href="#3-Stock-visualization-and-Price-Prediction" title="3. Stock visualization and Price Prediction">3. Stock visualization and Price Prediction</a></li>
+<li><a href="#4-Summary-Statistics-amp-Performance-Indicator" title="4. Summary Statistics &amp; Performance Indicator">4. Summary Statistics &amp; Performance Indicator</a></li>
 </ul>
 </li>
 </ul>
@@ -108,21 +113,21 @@
     </div>
     <div id="ui-toc-affix" class="ui-affix-toc ui-toc-dropdown unselectable hidden-print" data-spy="affix" style="top:17px;display:none;" null null>
         <div class="toc"><ul class="nav">
-<li class=""><a href="#Project-overview" title="Project overview">Project overview</a></li>
-<li class=""><a href="#Getting-started" title="Getting started">Getting started</a><ul class="nav">
-<li class=""><a href="#Installing-dependencies" title="Installing dependencies">Installing dependencies</a></li>
-<li class=""><a href="#Run-the-flask-app" title="Run the flask app">Run the flask app</a></li>
+<li><a href="#Project-overview" title="Project overview">Project overview</a></li>
+<li><a href="#Getting-started" title="Getting started">Getting started</a><ul class="nav">
+<li><a href="#Installing-dependencies" title="Installing dependencies">Installing dependencies</a></li>
+<li><a href="#Run-the-flask-app" title="Run the flask app">Run the flask app</a></li>
 </ul>
 </li>
-<li class=""><a href="#Details-of-each-component" title="Details of each component">Details of each component</a><ul class="nav">
-<li class=""><a href="#1-Stock-trend-prediction-with-RNN" title="1. Stock trend prediction with RNN">1. Stock trend prediction with RNN</a><ul class="nav">
-<li class=""><a href="#Making-a-prediction" title="Making a prediction">Making a prediction</a></li>
-<li class=""><a href="#Train-a-new-model" title="Train a new model">Train a new model</a></li>
+<li><a href="#Details-of-each-component" title="Details of each component">Details of each component</a><ul class="nav">
+<li><a href="#1-Stock-trend-prediction-with-RNN" title="1. Stock trend prediction with RNN">1. Stock trend prediction with RNN</a><ul class="nav">
+<li><a href="#Making-a-prediction" title="Making a prediction">Making a prediction</a></li>
+<li><a href="#Train-a-new-model" title="Train a new model">Train a new model</a></li>
 </ul>
 </li>
-<li><a href="#2-Sentimental-Analysis" title="2. Sentimental Analysis">2. Sentimental Analysis</a></li>
-<li><a href="#3-Keith" title="3. Keith">3. Keith</a></li>
-<li class=""><a href="#4-John" title="4. John">4. John</a></li>
+<li><a href="#2-Sentiment-Analysis" title="2. Sentiment Analysis">2. Sentiment Analysis</a></li>
+<li><a href="#3-Stock-visualization-and-Price-Prediction" title="3. Stock visualization and Price Prediction">3. Stock visualization and Price Prediction</a></li>
+<li><a href="#4-Summary-Statistics-amp-Performance-Indicator" title="4. Summary Statistics &amp; Performance Indicator">4. Summary Statistics &amp; Performance Indicator</a></li>
 </ul>
 </li>
 </ul>

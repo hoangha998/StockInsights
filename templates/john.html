@@ -2,7 +2,7 @@
 
 
 {% block links %}
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='john.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/john.css') }}">
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"
         integrity="sha512-QSkVNOCYLtj73J4hbmVoOV6KVZuMluZlioC+trLpewV8qMjsWqlIQvkn1KGX2StWvPMdWGBqim1xlC8krl1EKQ=="
@@ -40,7 +40,6 @@
                     }
                 })
                     .then(function (response) {
-                        // call function you wrote below from Chart.js here, passing response.data in as parameter
                         document.getElementById("myChart") && document.getElementById("myChart").remove()
                         document.getElementById('myStats') && document.getElementById('myStats').remove()
 
@@ -48,7 +47,6 @@
                         canvas.id = "myChart"
                         document.getElementsByClassName("container")[0].append(canvas)
                         const ctx = document.getElementById('myChart');
-                        console.log(response.data)
                         const ticker = response.data["columns"][0];
                         const xAxisLabels = response.data["index"];
                         const temp_data = response.data["data"];
@@ -57,7 +55,6 @@
                             dataPoints.push(temp_data[i][0])
                         }
 
-                        console.log(dataPoints)
                         const data = null
                         const options = {
                             responsive: false,
@@ -71,18 +68,17 @@
                                     return new Date(date).toLocaleDateString("en-US")
                                 }),
                                 datasets: [{
-                                    label: ticker, // Name the series
-                                    data: dataPoints, // Specify the data values array
+                                    label: ticker, 
+                                    data: dataPoints, 
                                     fill: false,
-                                    borderColor: '#2196f3', // Add custom color border (Line)
-                                    backgroundColor: '#2196f3', // Add custom color background (Points and Fill)
-                                    borderWidth: 1 // Specify bar border width
+                                    borderColor: '#2196f3', 
+                                    backgroundColor: '#2196f3',
+                                    borderWidth: 1 
                                 }]
                             },
                             options: options
                         });
 
-                        // create div to contain the stats
                         let statsDiv = document.createElement('div');
                         statsDiv.id = "myStats";
                         document.getElementsByClassName("container")[0].append(statsDiv)

@@ -22,9 +22,23 @@ def get_dash_app(app):
         server=app,
         url_base_pathname='/keith/'
     )
+    
     # setting up dash connection to server
     dash_app.layout = html.Div([
     html.H1('Stocks'),
+   
+    html.H3("The basis of the moving average trading style is very simple. If the short moving average exceeds the long moving average then you go long, if the long moving average exceeds the short moving average then you exit."),
+         html.Br(),
+         html.H3('Enter Stock Ticker Symbols: '),
+        dcc.Textarea(
+            id='textarea-state-example',
+            value='',
+            style={'width': '10%', 'align': 'center'},
+        ),
+        html.Button('Submit', id='textarea-state-example-button', n_clicks=0, style={'height': 25}),
+                
+        html.Br(),
+    
     html.Div(
         children=[
         html.Div(
@@ -32,15 +46,12 @@ def get_dash_app(app):
             html.H3('Date vs Close'),
             dcc.Graph(id='scatter'),
             ],
+            
             style={'width':'950px', 'height':'650px', 'display':'inline-block', 
                 'vertical-align':'top', 'border':'1px solid black', 'padding':'20px'}),    
-        html.Br(),
-        dcc.Textarea(
-            id='textarea-state-example',
-            value='',
-            style={'width': '10%', 'align': 'center'},
-        ),
-        html.Button('Submit', id='textarea-state-example-button', n_clicks=0, style={'height': 25}),
+
+        
+        
         html.Br(),
         html.Div(id='textarea-state-example-output', style={'whiteSpace': 'pre-line'}),
         html.Div(
