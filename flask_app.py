@@ -133,8 +133,9 @@ def compoundSentimentCallBackTest(company = 'Tesla'):
     sentiment_df = scrapeAndCleanse(company)
     sentiment_df = adjustSentimentDataFrame(sentiment_df, company)
     print(sentiment_df)
+    compavg = sentiment_df.iloc[0]['Compound Average']
     
-    sentimentTitle = "Overall Twitter Sentiment for {companyName} by Date".format(companyName = company)
+    sentimentTitle = "Overall Twitter Sentiment for {companyName} by Date. \n Today's compound average is {avg}".format(companyName = company, avg = compavg)
     fig = px.line(sentiment_df[sentiment_df['Company']==company], x='Date', y='Compound Average', title=sentimentTitle)
     graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
     return graphJSON
